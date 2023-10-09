@@ -1,2 +1,4 @@
-# rootve
-Chroot Virtual Environments
+# RootVE
+
+Management framework for chroot environments on NetBSD.
+
