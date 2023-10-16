@@ -12,7 +12,7 @@ import (
 
 const noneStr = "[None]"
 
-func uname() {
+func uname() string {
 	var (
 		buf = new(unix.Utsname)
 		err error
@@ -20,12 +20,7 @@ func uname() {
 	if err = unix.Uname(buf); err != nil {
 		panic(err)
 	}
-	fmt.Printf(
-		"%s %s %s\n",
-		string((*buf).Sysname[:]),
-		string((*buf).Release[:]),
-		string((*buf).Version[:]),
-	)
+	return string((*buf).Version[:])
 }
 
 func usage() {
@@ -76,7 +71,7 @@ func main() {
 
 	// Print system name, and chroot
 	// Warning: This section may panic in case of errors
-	uname()
+	fmt.Println(uname())
 	if err = ve.Chroot(); err != nil {
 		panic(err)
 	}
