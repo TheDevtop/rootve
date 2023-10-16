@@ -6,7 +6,9 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-const DefaultPath = "/etc/rootve"
+const (
+	DefaultPath = "/etc/rootve"
+)
 
 type VirtConfig struct {
 	Root        string
