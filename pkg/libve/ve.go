@@ -3,7 +3,8 @@ package libve
 import (
 	"os"
 	"os/exec"
-	"syscall"
+
+	"golang.org/x/sys/unix"
 )
 
 type VirtEnv struct {
@@ -11,12 +12,13 @@ type VirtEnv struct {
 	proc exec.Cmd
 }
 
+// Change root and directory
 func (ve *VirtEnv) Chroot() error {
 	var err error
-	if err = syscall.Chroot(ve.root); err != nil {
+	if err = unix.Chroot(ve.root); err != nil {
 		return err
 	}
-	if err = syscall.Chdir("/"); err != nil {
+	if err = unix.Chdir("/"); err != nil {
 		return err
 	}
 	return nil
@@ -32,6 +34,7 @@ func (ve *VirtEnv) Attach(in, out, err *os.File) {
 	ve.proc.Stderr = err
 }
 
+// Allocate virtual environment
 func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve := new(VirtEnv)
 	ve.root = vc.Root

@@ -18,6 +18,7 @@ type VirtConfig struct {
 	CommandArgs []string
 }
 
+// Read configuration map from toml file
 func ReadConfig(path string) (map[string]VirtConfig, error) {
 	var (
 		mvc = make(map[string]VirtConfig)
@@ -34,6 +35,7 @@ func ReadConfig(path string) (map[string]VirtConfig, error) {
 	return mvc, nil
 }
 
+// Write configuration map to toml file
 func WriteConfig(path string, mvc map[string]VirtConfig) error {
 	var (
 		err error
