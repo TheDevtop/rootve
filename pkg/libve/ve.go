@@ -34,6 +34,17 @@ func (ve *VirtEnv) Attach(in, out, err *os.File) {
 	ve.proc.Stderr = err
 }
 
+func (ve *VirtEnv) SetCreds(uid, gid int) error {
+	var err error
+	if unix.Setuid(uid); err != nil {
+		return err
+	}
+	if unix.Setgid(gid); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Allocate virtual environment
 func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve := new(VirtEnv)

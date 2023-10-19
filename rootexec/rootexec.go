@@ -76,9 +76,14 @@ func main() {
 		panic(err)
 	}
 
+	// Become root user/group
+	if err = ve.SetCreds(0, 0); err != nil {
+		panic(err)
+	}
+
 	// Execute the process, and finish
 	if err = ve.Execute(); err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	os.Exit(0)
 }
