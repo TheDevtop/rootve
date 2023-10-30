@@ -23,6 +23,14 @@ func uname() string {
 	return string((*buf).Version[:])
 }
 
+func parseCommand(str string) (string, []string) {
+	if argBuf := strings.Split(str, " "); len(argBuf) < 2 {
+		return argBuf[0], nil
+	} else {
+		return argBuf[0], argBuf[1:]
+	}
+}
+
 func usage() {
 	fmt.Println("rootexec: Create VE and execute process")
 	flag.PrintDefaults()
@@ -31,39 +39,33 @@ func usage() {
 
 func main() {
 	var (
-		vc  libve.VirtConfig
-		ve  *libve.VirtEnv
-		err error
+		mvc   map[string]libve.VirtConfig
+		vc    libve.VirtConfig
+		avail bool
+		ve    *libve.VirtEnv
+		err   error
 	)
 
 	// Setup and parse flags
 	var (
-		optRoot    = flag.String("r", noneStr, "Specify chroot path")
-		optDir     = flag.String("d", noneStr, "Specify working directory")
-		optCommand = flag.String("c", noneStr, "Specify command")
-		optClean   = flag.Bool("e", false, "Specify clean environment")
+		flagName     = flag.String("n", noneStr, "Specify virtual environment")
+		flagOverride = flag.String("c", noneStr, "Specify command override")
 	)
 	flag.Usage = usage
 	flag.Parse()
 
-	// The flags need to be specified explicitly
-	if *optRoot == noneStr || *optDir == noneStr || *optCommand == noneStr {
-		usage()
+	// Load configuration, and find virtual environment
+	if mvc, err = libve.ReadConfig(libve.DefaultPath); err != nil {
+		panic(err)
+	}
+	if vc, avail = mvc[*flagName]; !avail {
+		panic("Virtual environment not found")
 	}
 
-	// Split the command option into path and argument
-	if argBuf := strings.Split(*optCommand, " "); len(argBuf) < 2 {
-		vc.CommandPath = argBuf[0]
-		vc.CommandArgs = nil
-	} else {
-		vc.CommandPath = argBuf[0]
-		vc.CommandArgs = argBuf[1:]
+	// Check if we need to override the command
+	if *flagOverride != noneStr {
+		vc.CommandPath, vc.CommandArgs = parseCommand(*flagOverride)
 	}
-
-	// Fill the configuration in
-	vc.Root = *optRoot
-	vc.Directory = *optDir
-	vc.Clean = *optClean
 
 	// Allocate virtual environment, and attach std devices
 	ve = libve.NewEnvironment(vc)
@@ -76,8 +78,8 @@ func main() {
 		panic(err)
 	}
 
-	// Become root user/group
-	if err = ve.SetCreds(0, 0); err != nil {
+	// Become specified user/group
+	if err = ve.SetCreds(); err != nil {
 		panic(err)
 	}
 
