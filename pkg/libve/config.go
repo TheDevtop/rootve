@@ -31,7 +31,7 @@ func ReadConfig(path string) (map[string]VirtConfig, error) {
 	if buf, err = os.ReadFile(path); err != nil {
 		return nil, err
 	}
-	if err = toml.Unmarshal(buf, mvc); err != nil {
+	if err = toml.Unmarshal(buf, &mvc); err != nil {
 		return nil, err
 	}
 	return mvc, nil
