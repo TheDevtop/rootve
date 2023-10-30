@@ -13,7 +13,9 @@ const (
 type VirtConfig struct {
 	Root        string
 	Directory   string
-	Clean       bool
+	Uid         int
+	Gid         int
+	Environment []string
 	CommandPath string
 	CommandArgs []string
 }

@@ -10,6 +10,8 @@ import (
 type VirtEnv struct {
 	root string
 	proc exec.Cmd
+	uid  int
+	gid  int
 }
 
 // Change root and directory
@@ -34,12 +36,12 @@ func (ve *VirtEnv) Attach(in, out, err *os.File) {
 	ve.proc.Stderr = err
 }
 
-func (ve *VirtEnv) SetCreds(uid, gid int) error {
+func (ve *VirtEnv) SetCreds() error {
 	var err error
-	if unix.Setuid(uid); err != nil {
+	if unix.Setuid(ve.uid); err != nil {
 		return err
 	}
-	if unix.Setgid(gid); err != nil {
+	if unix.Setgid(ve.gid); err != nil {
 		return err
 	}
 	return nil
@@ -48,13 +50,14 @@ func (ve *VirtEnv) SetCreds(uid, gid int) error {
 // Allocate virtual environment
 func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve := new(VirtEnv)
-	ve.root = vc.Root
 	ve.proc = *new(exec.Cmd)
-	if vc.Clean {
-		ve.proc.Env = nil
-	}
+
+	ve.root = vc.Root
+	ve.proc.Dir = vc.Directory
+	ve.uid = vc.Uid
+	ve.gid = vc.Gid
+	ve.proc.Env = vc.Environment
 	ve.proc.Path = vc.CommandPath
 	ve.proc.Args = vc.CommandArgs
-	ve.proc.Dir = vc.Directory
 	return ve
 }
