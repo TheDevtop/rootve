@@ -6,9 +6,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-const (
-	DefaultPath = "/etc/rootve"
-)
+const DefaultPath = "/etc/rootve"
 
 type VirtConfig struct {
 	Root        string
@@ -49,4 +47,19 @@ func WriteConfig(path string, mvc map[string]VirtConfig) error {
 	}
 	os.WriteFile(path, buf, 0660)
 	return nil
+}
+
+// Allocate and initialize VE configuration
+func MakeVirtConfig() VirtConfig {
+	ptr := new(VirtConfig)
+
+	ptr.Root = "/"
+	ptr.Directory = "/"
+	ptr.Uid = 0
+	ptr.Gid = 0
+	ptr.Environment = []string{"TERM=xterm"}
+	ptr.CommandPath = "/bin/ksh"
+	ptr.CommandArgs = []string{"-l"}
+
+	return *ptr
 }
