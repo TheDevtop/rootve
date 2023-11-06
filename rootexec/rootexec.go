@@ -55,6 +55,7 @@ func main() {
 	flag.Parse()
 
 	// Load configuration, and find virtual environment
+	// Warning: This section may panic in case of errors
 	if mvc, err = libve.ReadConfig(libve.DefaultPath); err != nil {
 		panic(err)
 	}
@@ -72,7 +73,6 @@ func main() {
 	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
 
 	// Print system name, and chroot
-	// Warning: This section may panic in case of errors
 	fmt.Println(uname())
 	if err = ve.Chroot(); err != nil {
 		panic(err)

@@ -26,16 +26,19 @@ func (ve *VirtEnv) Chroot() error {
 	return nil
 }
 
+// Execute the process inside
 func (ve *VirtEnv) Execute() error {
 	return ve.proc.Run()
 }
 
+// Attach the standard devices
 func (ve *VirtEnv) Attach(in, out, err *os.File) {
 	ve.proc.Stdin = in
 	ve.proc.Stdout = out
 	ve.proc.Stderr = err
 }
 
+// Set the user and group id
 func (ve *VirtEnv) SetCreds() error {
 	var err error
 	if unix.Setuid(ve.uid); err != nil {
