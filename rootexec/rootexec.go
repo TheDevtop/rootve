@@ -4,34 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/TheDevtop/rootve/pkg/libve"
-	"golang.org/x/sys/unix"
 )
-
-const noneStr = "[None]"
-
-// Convert utsname structure to string
-func uname() string {
-	var (
-		buf = new(unix.Utsname)
-		err error
-	)
-	if err = unix.Uname(buf); err != nil {
-		panic(err)
-	}
-	return string((*buf).Version[:])
-}
-
-// Seperate command path from arguments
-func parseCommand(str string) (string, []string) {
-	if argBuf := strings.Split(str, " "); len(argBuf) < 2 {
-		return argBuf[0], nil
-	} else {
-		return argBuf[0], argBuf[1:]
-	}
-}
 
 func usage() {
 	fmt.Println("rootexec: Create VE and execute process")
@@ -50,8 +25,8 @@ func main() {
 
 	// Setup and parse flags
 	var (
-		flagName     = flag.String("n", noneStr, "Specify virtual environment")
-		flagOverride = flag.String("c", noneStr, "Specify command override")
+		flagName     = flag.String("n", libve.NoneStr, "Specify virtual environment")
+		flagOverride = flag.String("c", libve.NoneStr, "Specify command override")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -66,13 +41,12 @@ func main() {
 	}
 
 	// Check if we need to override the command
-	if *flagOverride != noneStr {
+	if *flagOverride != libve.NoneStr {
 		vc.CommandPath, vc.CommandArgs = parseCommand(*flagOverride)
 	}
 
-	// Allocate virtual environment, and attach std devices
+	// Allocate virtual environment
 	ve = libve.NewEnvironment(vc)
-	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
 
 	// Print system name, and chroot
 	fmt.Println(uname())
@@ -80,9 +54,17 @@ func main() {
 		panic(err)
 	}
 
+	// Attach std devices
+	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
+
 	// Become specified user/group
 	if err = ve.SetCreds(); err != nil {
 		panic(err)
+	}
+
+	// Mount filesystems, if possible
+	if err = autoMount(); err != nil {
+		fmt.Printf("Error: %s\n", err)
 	}
 
 	// Execute the process, and finish
