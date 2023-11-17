@@ -12,6 +12,7 @@ import (
 
 const noneStr = "[None]"
 
+// Convert utsname structure to string
 func uname() string {
 	var (
 		buf = new(unix.Utsname)
@@ -23,6 +24,7 @@ func uname() string {
 	return string((*buf).Version[:])
 }
 
+// Seperate command path from arguments
 func parseCommand(str string) (string, []string) {
 	if argBuf := strings.Split(str, " "); len(argBuf) < 2 {
 		return argBuf[0], nil
