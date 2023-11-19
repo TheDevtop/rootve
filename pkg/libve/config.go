@@ -10,6 +10,7 @@ const DefaultPath = "/etc/rootve"
 
 type VirtConfig struct {
 	Root        string
+	Autoboot    bool
 	Directory   string
 	Uid         int
 	Gid         int
