@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"os/exec"
 	"strings"
 
 	"golang.org/x/sys/unix"
@@ -27,13 +25,4 @@ func parseCommand(str string) (string, []string) {
 	} else {
 		return argBuf[0], argBuf[1:]
 	}
-}
-
-// Mount filesystems, if possible
-func autoMount() error {
-	cmd := exec.Command("/sbin/mount", "-a")
-	if cmd.Run() != nil {
-		return fmt.Errorf("could not mount all filesystems properly")
-	}
-	return nil
 }

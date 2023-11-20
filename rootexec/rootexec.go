@@ -54,18 +54,16 @@ func main() {
 		panic(err)
 	}
 
-	// Attach std devices
-	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
-
 	// Become specified user/group
 	if err = ve.SetCreds(); err != nil {
 		panic(err)
 	}
 
-	// Mount filesystems, if possible
-	if err = autoMount(); err != nil {
-		fmt.Printf("Error: %s\n", err)
-	}
+	// Attach std devices
+	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
+
+	// Mount filesystems
+	ve.Mount()
 
 	// Execute the process, and finish
 	if err = ve.Execute(); err != nil {

@@ -15,6 +15,7 @@ type VirtConfig struct {
 	Uid         int
 	Gid         int
 	Environment []string
+	Interface   string
 	CommandPath string
 	CommandArgs []string
 }
@@ -52,15 +53,15 @@ func WriteConfig(path string, mvc map[string]VirtConfig) error {
 
 // Allocate and initialize VE configuration
 func MakeVirtConfig() VirtConfig {
-	ptr := new(VirtConfig)
-
-	ptr.Root = "/"
-	ptr.Directory = "/"
-	ptr.Uid = 0
-	ptr.Gid = 0
-	ptr.Environment = []string{"TERM=xterm"}
-	ptr.CommandPath = "/bin/ksh"
-	ptr.CommandArgs = []string{"-l"}
-
-	return *ptr
+	return VirtConfig{
+		Root:        "/",
+		Autoboot:    false,
+		Directory:   "/",
+		Uid:         0,
+		Gid:         0,
+		Environment: []string{"TERM=xterm"},
+		Interface:   "lo",
+		CommandPath: "/bin/ksh",
+		CommandArgs: []string{"-l"},
+	}
 }

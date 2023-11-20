@@ -50,6 +50,11 @@ func (ve *VirtEnv) SetCreds() error {
 	return nil
 }
 
+// Attempt to mount all filesystems
+func (ve *VirtEnv) Mount() {
+	exec.Command("/sbin/mount", "-a").Run()
+}
+
 // Allocate virtual environment
 func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve := new(VirtEnv)
