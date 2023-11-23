@@ -5,8 +5,9 @@ const SocketPath = "/net/rootd"
 
 // States
 const (
-	StateOff = "Offline"
-	StateOn  = "Online"
+	StateOff    = "Offline"
+	StateOn     = "Online"
+	StatePaused = "Paused"
 )
 
 // WebAPI Routes
@@ -15,4 +16,6 @@ const (
 	RouteStop       = "/api/stop"
 	RouteListAll    = "/api/list/all"
 	RouteListOnline = "/api/list/online"
+	RoutePause      = "/api/pause"
+	RouteResume     = "/api/resume"
 )
