@@ -20,7 +20,7 @@ var (
 func main() {
 	var (
 		err    error
-		socket net.Listener
+		socket *net.UnixListener
 		mux    *http.ServeMux
 		mvc    map[string]libve.VirtConfig
 	)
@@ -44,13 +44,15 @@ func main() {
 	// Autoboot enabled VE's
 	autoboot()
 
-	// Setup HTTP multiplexer
+	// Initialize multiplexer
+	mux = http.NewServeMux()
 	mux.HandleFunc(libcsrv.RouteStart, apiStart)
 	mux.HandleFunc(libcsrv.RouteStop, apiStop)
 	mux.HandleFunc(libcsrv.RouteListAll, apiListAll)
 	mux.HandleFunc(libcsrv.RouteListOnline, apiListOnline)
 	mux.HandleFunc(libcsrv.RoutePause, apiPause)
 	mux.HandleFunc(libcsrv.RouteResume, apiResume)
+	log.Println("Initialized multiplexer")
 
 	// Setup signal listener
 	go sigListen()
