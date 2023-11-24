@@ -20,7 +20,7 @@ var (
 func main() {
 	var (
 		err    error
-		socket *net.UnixListener
+		socket net.Listener
 		mux    *http.ServeMux
 		mvc    map[string]libve.VirtConfig
 	)
