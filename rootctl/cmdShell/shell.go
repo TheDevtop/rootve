@@ -21,7 +21,7 @@ func ShellMain() {
 		os.Exit(2)
 	}
 
-	cmd = exec.Command(libcsrv.RootexecPath, libcsrv.RootexecFlagName, os.Args[1], libcsrv.RootexecFlagOverride, "/bin/ksh", "-l")
+	cmd = exec.Command(libcsrv.RootexecPath, libcsrv.RootexecFlagName, os.Args[1], libcsrv.RootexecFlagOverride, "/bin/ksh -l")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
