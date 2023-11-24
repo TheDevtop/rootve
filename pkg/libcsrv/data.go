@@ -3,6 +3,12 @@ package libcsrv
 // Path to server socket
 const SocketPath = "/net/rootd"
 
+// Rootexec data
+const (
+	RootexecPath = "/usr/local/bin/rootexec"
+	RootexecArg  = "-n"
+)
+
 // States
 const (
 	StateOff    = "Offline"
