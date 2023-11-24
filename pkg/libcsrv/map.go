@@ -23,7 +23,7 @@ func MakeTable(mvc map[string]libve.VirtConfig) VeTable {
 
 		entry.State = StateOff
 		entry.Config = val
-		entry.Exec = *exec.Command(RootexecPath, RootexecArg, key)
+		entry.Exec = *exec.Command(RootexecPath, RootexecFlagName, key)
 
 		vtab[key] = entry
 	}

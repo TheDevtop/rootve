@@ -5,8 +5,9 @@ const SocketPath = "/net/rootd"
 
 // Rootexec data
 const (
-	RootexecPath = "/usr/local/bin/rootexec"
-	RootexecArg  = "-n"
+	RootexecPath         = "/usr/local/bin/rootexec"
+	RootexecFlagName     = "-n"
+	RootexecFlagOverride = "-c"
 )
 
 // States
