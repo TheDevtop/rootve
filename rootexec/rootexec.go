@@ -33,7 +33,7 @@ func main() {
 
 	// Load configuration, and find virtual environment
 	// Warning: This section may panic in case of errors
-	if mvc, err = libve.ReadConfig(libve.DefaultPath); err != nil {
+	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
 		panic(err)
 	}
 	if vc, avail = mvc[*flagName]; !avail {

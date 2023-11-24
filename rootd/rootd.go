@@ -34,7 +34,7 @@ func main() {
 	log.Printf("Socket endpoint: %s\n", libcsrv.SocketPath)
 
 	// Read /etc/rootve, initialize vtab
-	if mvc, err = libve.ReadConfig(libve.DefaultPath); err != nil {
+	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
 		log.Fatalln(err)
 	}
 	vtab = libcsrv.MakeTable(mvc)
