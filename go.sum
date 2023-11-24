@@ -1,3 +1,5 @@
+github.com/TheDevtop/ipcfs/go/ipcfs v0.0.0-20231124105249-b0c0332e221b h1:JOZPjVVdUowoWLJASuomiDBL8ZvsnCK5GDiFIy+Yb84=
+github.com/TheDevtop/ipcfs/go/ipcfs v0.0.0-20231124105249-b0c0332e221b/go.mod h1:mG2oYer9EjBlXPXVkHQKBgI+yLa/6quxJdOmGghEd9E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

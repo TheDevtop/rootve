@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/TheDevtop/ipcfs/go/ipcfs"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 	"github.com/TheDevtop/rootve/pkg/libve"
 )
@@ -19,7 +20,7 @@ var (
 func main() {
 	var (
 		err    error
-		socket net.Listener
+		socket *net.UnixListener
 		mux    *http.ServeMux
 		mvc    map[string]libve.VirtConfig
 	)
@@ -27,11 +28,11 @@ func main() {
 	// Welcome message
 	log.Println("Starting RootVE Server...")
 
-	// Allocate socket
-	if socket, err = net.Listen("unix", libcsrv.SocketPath); err != nil {
-		log.Panicln(err)
+	// Register server endpoint
+	if socket, err = ipcfs.RegisterNetwork("rootd"); err != nil {
+		log.Fatalln(err)
 	}
-	log.Printf("Socket endpoint: %s\n", libcsrv.SocketPath)
+	log.Println("Registered server endpoint")
 
 	// Read /etc/rootve, initialize vtab
 	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
