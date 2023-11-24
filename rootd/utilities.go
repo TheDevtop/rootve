@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/TheDevtop/ipcfs/go/ipcfs"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 	"golang.org/x/sys/unix"
 )
@@ -17,12 +18,17 @@ func sigListen() {
 	signal.Notify(ch, os.Interrupt, unix.SIGTERM)
 	<-ch
 
+	// Deregister server endpoint
+	ipcfs.DeregisterNetwork("rootd", srv)
+
 	// Stop the environments
 	lock.Lock()
 	for key, val := range vtab {
-		val.Exec.Cancel()
-		val.State = libcsrv.StateOff
-		log.Printf("Stopped %s\n", key)
+		if val != nil {
+			val.Exec.Cancel()
+			val.State = libcsrv.StateOff
+			log.Printf("Stopped %s\n", key)
+		}
 	}
 	lock.Unlock()
 

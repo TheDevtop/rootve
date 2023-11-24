@@ -17,19 +17,21 @@ var (
 	lock sync.Mutex
 )
 
+// Global server (/srv/rootd)
+var srv *net.UnixListener
+
 func main() {
 	var (
-		err    error
-		socket *net.UnixListener
-		mux    *http.ServeMux
-		mvc    map[string]libve.VirtConfig
+		err error
+		mux *http.ServeMux
+		mvc map[string]libve.VirtConfig
 	)
 
 	// Welcome message
 	log.Println("Starting RootVE Server...")
 
 	// Register server endpoint
-	if socket, err = ipcfs.RegisterNetwork("rootd"); err != nil {
+	if srv, err = ipcfs.RegisterNetwork("rootd"); err != nil {
 		log.Fatalln(err)
 	}
 	log.Println("Registered server endpoint")
@@ -60,7 +62,7 @@ func main() {
 
 	// Serve WebAPI
 	log.Println("Serving API")
-	if err = http.Serve(socket, mux); err != nil {
+	if err = http.Serve(srv, mux); err != nil {
 		log.Println(err)
 	}
 }
