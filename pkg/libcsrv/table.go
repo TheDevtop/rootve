@@ -6,12 +6,6 @@ import (
 	"github.com/TheDevtop/rootve/pkg/libve"
 )
 
-type VeEntry struct {
-	State  string
-	Config libve.VirtConfig
-	Exec   exec.Cmd
-}
-
 type VeTable map[string]*VeEntry
 
 // Make virtual environment table out of configuration structure

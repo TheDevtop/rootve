@@ -1,5 +1,7 @@
 package libcsrv
 
+import "errors"
+
 // Path to server socket
 const SocketPath = "/net/rootd"
 
@@ -9,6 +11,9 @@ const (
 	RootexecFlagName     = "-n"
 	RootexecFlagOverride = "-c"
 )
+
+// Request header keys
+const HdrName = "name"
 
 // States
 const (
@@ -26,3 +31,6 @@ const (
 	RoutePause      = "/api/pause"
 	RouteResume     = "/api/resume"
 )
+
+// Internal errors
+var errInvalidState = errors.New("invalid target state")
