@@ -10,7 +10,7 @@ import (
 type VeEntry struct {
 	State  string
 	Config libve.VirtConfig
-	Exec   exec.Cmd
+	Exec   exec.Cmd `json:"-"`
 }
 
 func (entry *VeEntry) Start() error {

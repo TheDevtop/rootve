@@ -1,6 +1,8 @@
 package libcsrv
 
 import (
+	"encoding/json"
+	"io"
 	"os/exec"
 
 	"github.com/TheDevtop/rootve/pkg/libve"
@@ -22,4 +24,24 @@ func MakeTable(mvc map[string]libve.VirtConfig) VeTable {
 		vtab[key] = entry
 	}
 	return vtab
+}
+
+func ReadTable(rc io.ReadCloser) (VeTable, error) {
+	var (
+		err error
+		buf []byte
+		tab = make(VeTable)
+	)
+
+	defer rc.Close()
+
+	if buf, err = io.ReadAll(rc); err != nil {
+		return nil, err
+	}
+
+	if json.Unmarshal(buf, &tab); err != nil {
+		return nil, err
+	}
+
+	return tab, nil
 }
