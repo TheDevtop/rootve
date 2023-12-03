@@ -8,3 +8,8 @@ type VeEntry struct {
 }
 
 type VeList []VeEntry
+
+type ResultModel struct {
+	Code    int
+	Message string
+}

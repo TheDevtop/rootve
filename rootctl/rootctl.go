@@ -6,6 +6,7 @@ import (
 
 	"github.com/TheDevtop/rootve/rootctl/cmdList"
 	"github.com/TheDevtop/rootve/rootctl/cmdShell"
+	"github.com/TheDevtop/rootve/rootctl/cmdState"
 )
 
 func usage() {
@@ -28,6 +29,14 @@ func main() {
 		cmdList.PsMain()
 	case cmdShell.TagShell:
 		cmdShell.ShellMain()
+	case cmdState.TagStart:
+		cmdState.StartMain()
+	case cmdState.TagStop:
+		cmdState.StopMain()
+	case cmdState.TagPause:
+		cmdState.PauseMain()
+	case cmdState.TagResume:
+		cmdState.ResumeMain()
 	default:
 		usage()
 		os.Exit(1)
