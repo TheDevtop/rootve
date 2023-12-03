@@ -22,17 +22,17 @@ func Mapto[T any](o T, w io.Writer) error {
 }
 
 // Map from reader to object
-func Mapfrom[T any](r io.Reader, o *T) (*T, error) {
+func Mapfrom[T any](r io.Reader, o *T) error {
 	var (
 		buf []byte
 		err error
 	)
 
 	if buf, err = io.ReadAll(r); err != nil {
-		return o, err
+		return err
 	}
 	if json.Unmarshal(buf, o); err != nil {
-		return o, err
+		return err
 	}
-	return o, nil
+	return nil
 }
