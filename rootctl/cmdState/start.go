@@ -28,7 +28,7 @@ func StartMain() {
 		os.Exit(2)
 	}
 
-	if _, err = client.Post(libcsrv.MapProtocol(libcsrv.RouteListOnline), "", buf); err != nil {
+	if _, err = client.Post(libcsrv.MapProtocol(libcsrv.RouteStart), "", buf); err != nil {
 		fmt.Println(err)
 		os.Exit(2)
 	}
