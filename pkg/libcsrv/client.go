@@ -15,3 +15,7 @@ func MakeClient() http.Client {
 		},
 	}
 }
+
+func MapProtocol(s string) string {
+	return "http://" + s
+}

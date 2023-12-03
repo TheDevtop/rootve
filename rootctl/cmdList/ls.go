@@ -21,7 +21,7 @@ func LsMain() {
 		list   models.VeList
 	)
 
-	if resp, err = client.Get(libcsrv.RouteListAll); err != nil {
+	if resp, err = client.Get(libcsrv.MapProtocol(libcsrv.RouteListAll)); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
