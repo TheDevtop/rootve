@@ -28,7 +28,7 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 	lock.Unlock()
 
 	if entry == nil {
-		log.Println("Requested entry is nil pointer")
+		log.Printf("Requested entry (%s) is nil pointer\n", name)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -60,7 +60,7 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 	lock.Unlock()
 
 	if entry == nil {
-		log.Println("Requested entry is nil pointer")
+		log.Printf("Requested entry (%s) is nil pointer\n", name)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -137,7 +137,7 @@ func apiPause(w http.ResponseWriter, r *http.Request) {
 	lock.Unlock()
 
 	if entry == nil {
-		log.Println("Requested entry is nil pointer")
+		log.Printf("Requested entry (%s) is nil pointer\n", name)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -169,7 +169,7 @@ func apiResume(w http.ResponseWriter, r *http.Request) {
 	lock.Unlock()
 
 	if entry == nil {
-		log.Println("Requested entry is nil pointer")
+		log.Printf("Requested entry (%s) is nil pointer\n", name)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
