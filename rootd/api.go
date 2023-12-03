@@ -5,15 +5,22 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/TheDevtop/rootve/pkg/jmap"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 )
 
 func apiStart(w http.ResponseWriter, r *http.Request) {
 	var (
-		name  = r.Header.Get(libcsrv.HdrName)
+		name  string
 		entry *libcsrv.VeEntry
 		err   error
 	)
+
+	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// Critical section
 	lock.Lock()
@@ -36,10 +43,16 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 
 func apiStop(w http.ResponseWriter, r *http.Request) {
 	var (
-		name  = r.Header.Get(libcsrv.HdrName)
+		name  string
 		entry *libcsrv.VeEntry
 		err   error
 	)
+
+	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// Critical section
 	lock.Lock()
@@ -107,10 +120,16 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 
 func apiPause(w http.ResponseWriter, r *http.Request) {
 	var (
-		name  = r.Header.Get(libcsrv.HdrName)
+		name  string
 		entry *libcsrv.VeEntry
 		err   error
 	)
+
+	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// Critical section
 	lock.Lock()
@@ -133,10 +152,16 @@ func apiPause(w http.ResponseWriter, r *http.Request) {
 
 func apiResume(w http.ResponseWriter, r *http.Request) {
 	var (
-		name  = r.Header.Get(libcsrv.HdrName)
+		name  string
 		entry *libcsrv.VeEntry
 		err   error
 	)
+
+	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// Critical section
 	lock.Lock()
