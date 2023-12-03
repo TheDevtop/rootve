@@ -3,7 +3,7 @@ package libcsrv
 import "errors"
 
 // Path to server socket
-const SocketPath = "/net/rootd"
+const SocketPath = "/srv/rootd"
 
 // Rootexec data
 const (
