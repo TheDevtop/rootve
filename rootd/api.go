@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -60,11 +61,48 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 }
 
 func apiListAll(w http.ResponseWriter, r *http.Request) {
+	var (
+		err error
+		buf []byte
+	)
 
+	// Critical section
+	lock.Lock()
+	buf, err = json.Marshal(vtab)
+	lock.Unlock()
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(buf)
 }
 
 func apiListOnline(w http.ResponseWriter, r *http.Request) {
+	var (
+		err  error
+		buf  []byte
+		otab = make(libcsrv.VeTable)
+	)
 
+	// Critical section
+	lock.Lock()
+	for k, v := range vtab {
+		if v.State == libcsrv.StateOn {
+			otab[k] = v
+		}
+	}
+	lock.Unlock()
+
+	if buf, err = json.Marshal(otab); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(buf)
 }
 
 func apiPause(w http.ResponseWriter, r *http.Request) {
