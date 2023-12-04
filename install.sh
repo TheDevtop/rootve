@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Run this script as root!
+
 cp rootexec/rootexec /usr/local/bin/rootexec && echo 'Installed: rootexec'
 chmod ug+s /usr/local/bin/rootexec
 

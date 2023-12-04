@@ -9,6 +9,7 @@ import (
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 )
 
+// Start a named Virtual Environment
 func apiStart(w http.ResponseWriter, r *http.Request) {
 	var (
 		name  string
@@ -41,6 +42,7 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Started %s\n", name)
 }
 
+// Start a named Virtual Environment
 func apiStop(w http.ResponseWriter, r *http.Request) {
 	var (
 		name  string
@@ -73,6 +75,7 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Stopped %s\n", name)
 }
 
+// List all Virtual Environments
 func apiListAll(w http.ResponseWriter, r *http.Request) {
 	var (
 		err error
@@ -93,6 +96,7 @@ func apiListAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(buf)
 }
 
+// List online Virtual Environments
 func apiListOnline(w http.ResponseWriter, r *http.Request) {
 	var (
 		err  error
@@ -118,6 +122,7 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 	w.Write(buf)
 }
 
+// Pause a named Virtual Environment
 func apiPause(w http.ResponseWriter, r *http.Request) {
 	var (
 		name  string
@@ -150,6 +155,7 @@ func apiPause(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Paused %s\n", name)
 }
 
+// Resume a named Virtual Environment
 func apiResume(w http.ResponseWriter, r *http.Request) {
 	var (
 		name  string
