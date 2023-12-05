@@ -9,7 +9,51 @@ import (
 
 // Start a named Virtual Environment
 func apiStart(w http.ResponseWriter, r *http.Request) {
+	var (
+		err      error
+		vmp      *vmach
+		nameForm = new(libcsrv.FormMessage)
+	)
 
+	// Read the name from the form
+	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
+		log.Println(err)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		return
+	}
+
+	// Find the vmp, critical section
+	lock.Lock()
+	if vmp = vmap[nameForm.Data]; vmp != nil {
+		log.Printf("%s: %s\n", errVmapEntry, nameForm.Data)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  errVmapEntry.Error(),
+		})
+		return
+	}
+	lock.Unlock()
+
+	// Attempt to start the vmp
+	if err = vmp.Switch(libcsrv.StateOn); err != nil {
+		log.Println(err)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		return
+	}
+
+	// Send a response message
+	if err = libcsrv.WriteJson(w, libcsrv.FormMessage{
+		Error: false,
+		Data:  "",
+	}); err != nil {
+		log.Println(err)
+	}
 }
 
 // Start a named Virtual Environment
@@ -26,13 +70,13 @@ func apiListAll(w http.ResponseWriter, r *http.Request) {
 
 	// Critical section
 	lock.Lock()
-	for key, val := range vmap {
-		if val != nil {
+	for key, vmp := range vmap {
+		if vmp != nil {
 			form.Data = append(form.Data, libcsrv.FormVeList{
 				Name:    key,
-				State:   libcsrv.Slabel(val.state),
-				Path:    val.config.Root,
-				Command: val.config.CommandPath,
+				State:   libcsrv.Slabel(vmp.state),
+				Path:    vmp.config.Root,
+				Command: vmp.config.CommandPath,
 			})
 		}
 	}
@@ -52,13 +96,13 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 
 	// Critical section
 	lock.Lock()
-	for key, val := range vmap {
-		if val != nil && val.state == libcsrv.StateOn {
+	for key, vmp := range vmap {
+		if vmp != nil && vmp.state == libcsrv.StateOn {
 			form.Data = append(form.Data, libcsrv.FormVeList{
 				Name:    key,
-				State:   libcsrv.Slabel(val.state),
-				Path:    val.config.Root,
-				Command: val.config.CommandPath,
+				State:   libcsrv.Slabel(vmp.state),
+				Path:    vmp.config.Root,
+				Command: vmp.config.CommandPath,
 			})
 		}
 	}

@@ -1,12 +1,15 @@
 package main
 
 import (
+	"errors"
 	"os/exec"
 
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 	"github.com/TheDevtop/rootve/pkg/libve"
 	"golang.org/x/sys/unix"
 )
+
+var errVmapEntry = errors.New("vmap entry not found")
 
 // A "Virtual Machine" structure
 type vmach struct {
@@ -26,7 +29,10 @@ func newVmach(name string, vc libve.VirtConfig) *vmach {
 
 // Executes the state switch function
 func (vmp *vmach) Switch(state byte) error {
-	var err error
+	var (
+		err      error
+		stateErr = errors.New("invalid state transition")
+	)
 
 	switch vmp.state {
 	case libcsrv.StateOff:
@@ -37,7 +43,7 @@ func (vmp *vmach) Switch(state byte) error {
 			vmp.state = state
 			return nil
 		}
-
+		return stateErr
 	case libcsrv.StateOn:
 		switch state {
 		case libcsrv.StateOff:
@@ -53,7 +59,7 @@ func (vmp *vmach) Switch(state byte) error {
 			vmp.state = state
 			return nil
 		}
-
+		return stateErr
 	case libcsrv.StatePaused:
 		switch state {
 		case libcsrv.StateOff:
@@ -69,6 +75,7 @@ func (vmp *vmach) Switch(state byte) error {
 			vmp.state = state
 			return nil
 		}
+		return stateErr
 	}
-	return nil
+	return stateErr
 }

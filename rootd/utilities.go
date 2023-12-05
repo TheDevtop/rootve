@@ -24,11 +24,10 @@ func sigListen() {
 
 	// Stop the environments
 	lock.Lock()
-	for key, val := range vmap {
-		if val != nil {
-			if val.proc != nil {
-				val.proc.Cancel()
-				val.state = libcsrv.StateOff
+	for key, vmp := range vmap {
+		if vmp != nil {
+			if vmp.proc != nil {
+				vmp.Switch(libcsrv.StateOff)
 				log.Printf("Stopped %s\n", key)
 			}
 		}
@@ -44,12 +43,11 @@ func autoboot() {
 	var err error
 
 	lock.Lock()
-	for key, val := range vmap {
-		if val.config.Autoboot && val.proc != nil {
-			if err = val.proc.Start(); err != nil {
+	for key, vmp := range vmap {
+		if vmp.config.Autoboot && vmp.proc != nil {
+			if err = vmp.Switch(libcsrv.StateOn); err != nil {
 				log.Printf("Could not autoboot %s: %s\n", key, err)
 			} else {
-				val.state = libcsrv.StateOn
 				log.Printf("Autobooted %s\n", key)
 			}
 		}
