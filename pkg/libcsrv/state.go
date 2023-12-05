@@ -18,3 +18,16 @@ const (
 	SlabelOn     = "Online"
 	SlabelPaused = "Paused"
 )
+
+// Convert state to label
+func Slabel(state byte) string {
+	switch state {
+	case StateOff:
+		return SlabelOff
+	case StateOn:
+		return SlabelOn
+	case StatePaused:
+		return SlabelPaused
+	}
+	return ""
+}

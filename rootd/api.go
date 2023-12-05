@@ -1,189 +1,112 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
-	"github.com/TheDevtop/rootve/pkg/jmap"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 )
 
 // Start a named Virtual Environment
 func apiStart(w http.ResponseWriter, r *http.Request) {
-	var (
-		name  string
-		entry *libcsrv.VeEntry
-		err   error
-	)
 
-	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Critical section
-	lock.Lock()
-	entry = vtab[name]
-	lock.Unlock()
-
-	if entry == nil {
-		log.Printf("Requested entry (%s) is nil pointer\n", name)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if err = entry.Start(); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	log.Printf("Started %s\n", name)
 }
 
 // Start a named Virtual Environment
 func apiStop(w http.ResponseWriter, r *http.Request) {
-	var (
-		name  string
-		entry *libcsrv.VeEntry
-		err   error
-	)
 
-	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Critical section
-	lock.Lock()
-	entry = vtab[name]
-	lock.Unlock()
-
-	if entry == nil {
-		log.Printf("Requested entry (%s) is nil pointer\n", name)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if err = entry.Stop(); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	log.Printf("Stopped %s\n", name)
 }
 
 // List all Virtual Environments
 func apiListAll(w http.ResponseWriter, r *http.Request) {
 	var (
-		err error
-		buf []byte
+		err  error
+		form = new(libcsrv.Form[[]libcsrv.FormVeList])
 	)
 
 	// Critical section
 	lock.Lock()
-	buf, err = json.Marshal(vtab)
+	for key, val := range vmap {
+		if val != nil {
+			form.Data = append(form.Data, libcsrv.FormVeList{
+				Name:    key,
+				State:   libcsrv.Slabel(val.state),
+				Path:    val.config.Root,
+				Command: val.config.CommandPath,
+			})
+		}
+	}
 	lock.Unlock()
 
-	if err != nil {
+	if err = libcsrv.WriteJson(w, *form); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
 	}
-
-	w.Write(buf)
 }
 
 // List online Virtual Environments
 func apiListOnline(w http.ResponseWriter, r *http.Request) {
 	var (
 		err  error
-		buf  []byte
-		otab = make(libcsrv.VeTable)
+		form = new(libcsrv.Form[[]libcsrv.FormVeList])
 	)
 
 	// Critical section
 	lock.Lock()
-	for k, v := range vtab {
-		if v.State == libcsrv.StateOn {
-			otab[k] = v
+	for key, val := range vmap {
+		if val != nil && val.state == libcsrv.StateOn {
+			form.Data = append(form.Data, libcsrv.FormVeList{
+				Name:    key,
+				State:   libcsrv.Slabel(val.state),
+				Path:    val.config.Root,
+				Command: val.config.CommandPath,
+			})
 		}
 	}
 	lock.Unlock()
 
-	if buf, err = json.Marshal(otab); err != nil {
+	if err = libcsrv.WriteJson(w, *form); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
 	}
-
-	w.Write(buf)
 }
 
 // Pause a named Virtual Environment
 func apiPause(w http.ResponseWriter, r *http.Request) {
-	var (
-		name  string
-		entry *libcsrv.VeEntry
-		err   error
-	)
 
-	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Critical section
-	lock.Lock()
-	entry = vtab[name]
-	lock.Unlock()
-
-	if entry == nil {
-		log.Printf("Requested entry (%s) is nil pointer\n", name)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if err = entry.Pause(); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	log.Printf("Paused %s\n", name)
 }
 
 // Resume a named Virtual Environment
 func apiResume(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// Assert if virtual environment is online
+func apiOnline(w http.ResponseWriter, r *http.Request) {
 	var (
-		name  string
-		entry *libcsrv.VeEntry
-		err   error
+		nameForm   = new(libcsrv.FormMessage)
+		onlineForm = new(libcsrv.Form[bool])
+		err        error
+		vmp        *vmach
 	)
 
-	if err = jmap.Mapfrom[string](r.Body, &name); err != nil {
+	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
 		return
 	}
 
 	// Critical section
 	lock.Lock()
-	entry = vtab[name]
+	if vmp = vmap[nameForm.Data]; vmp != nil && vmp.state == libcsrv.StateOn {
+		onlineForm.Data = true
+	} else {
+		onlineForm.Data = false
+	}
 	lock.Unlock()
 
-	if entry == nil {
-		log.Printf("Requested entry (%s) is nil pointer\n", name)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if err = entry.Resume(); err != nil {
+	if err = libcsrv.WriteJson(w, *onlineForm); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
 	}
-
-	log.Printf("Resumed %s\n", name)
 }
