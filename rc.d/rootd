@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# PROVIDE: rootd
+# REQUIRE: srvfs
+
+$_rc_subr_loaded . /etc/rc.subr
+
+name="rootd"
+rcvar=$name
+command="/usr/local/bin/rootd"
+pidfile="/var/run/${name}.pid"
+
+load_rc_config $name
+run_rc_command "$1"

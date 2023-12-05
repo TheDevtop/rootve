@@ -10,4 +10,7 @@ chmod ug+s /usr/local/bin/rootd
 
 cp rootctl/rootctl /usr/local/bin/rootctl && echo 'Installed: rootctl'
 
+cp rc.d/rootd /etc/rc.d/rootd && echo 'Installed: Service file'
+chmod a+x /etc/rc.d/rootd
+
 exit 0
