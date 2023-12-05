@@ -11,9 +11,9 @@ import (
 	"github.com/TheDevtop/rootve/pkg/libve"
 )
 
-// Global lock and table
+// The global lookup map and lock
 var (
-	vtab libcsrv.VeTable
+	vmap map[string]*vmach
 	lock sync.Mutex
 )
 
@@ -36,12 +36,12 @@ func main() {
 	}
 	log.Println("Registered server endpoint")
 
-	// Read /etc/rootve, initialize vtab
+	// Read /etc/rootve, initialize vmap
 	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
 		log.Fatalln(err)
 	}
-	vtab = libcsrv.MakeTable(mvc)
-	log.Println("Initialized table and configuration")
+	vmap = makeVmap(mvc)
+	log.Println("Initialized global structures")
 
 	// Autoboot enabled VE's
 	autoboot()
@@ -54,6 +54,7 @@ func main() {
 	mux.HandleFunc(libcsrv.RouteListOnline, apiListOnline)
 	mux.HandleFunc(libcsrv.RoutePause, apiPause)
 	mux.HandleFunc(libcsrv.RouteResume, apiResume)
+	mux.HandleFunc(libcsrv.RouteOnline, apiOnline)
 	log.Println("Initialized multiplexer")
 
 	// Setup signal listener

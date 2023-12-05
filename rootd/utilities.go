@@ -7,6 +7,7 @@ import (
 
 	"github.com/TheDevtop/ipcfs/go/ipcfs"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
+	"github.com/TheDevtop/rootve/pkg/libve"
 	"golang.org/x/sys/unix"
 )
 
@@ -23,11 +24,13 @@ func sigListen() {
 
 	// Stop the environments
 	lock.Lock()
-	for key, val := range vtab {
+	for key, val := range vmap {
 		if val != nil {
-			val.Exec.Cancel()
-			val.State = libcsrv.StateOff
-			log.Printf("Stopped %s\n", key)
+			if val.proc != nil {
+				val.proc.Cancel()
+				val.state = libcsrv.StateOff
+				log.Printf("Stopped %s\n", key)
+			}
 		}
 	}
 	lock.Unlock()
@@ -41,15 +44,24 @@ func autoboot() {
 	var err error
 
 	lock.Lock()
-	for key, val := range vtab {
-		if val.Config.Autoboot {
-			if err = val.Exec.Start(); err != nil {
+	for key, val := range vmap {
+		if val.config.Autoboot && val.proc != nil {
+			if err = val.proc.Start(); err != nil {
 				log.Printf("Could not autoboot %s: %s\n", key, err)
 			} else {
-				val.State = libcsrv.StateOn
+				val.state = libcsrv.StateOn
 				log.Printf("Autobooted %s\n", key)
 			}
 		}
 	}
 	lock.Unlock()
+}
+
+// Allocate and initialize a "Virtual Machine Map"
+func makeVmap(mvc map[string]libve.VirtConfig) map[string]*vmach {
+	newMap := make(map[string]*vmach, len(mvc))
+	for name, vc := range mvc {
+		newMap[name] = newVmach(name, vc)
+	}
+	return newMap
 }
