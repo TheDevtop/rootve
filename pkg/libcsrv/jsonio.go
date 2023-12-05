@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 )
 
 // Read from reader and cast to pointer
@@ -24,4 +25,13 @@ func WriteJson(w io.Writer, obj any) error {
 		return err
 	}
 	return nil
+}
+
+// Cast object to strings reader, return reader
+func MakeJsonReader(obj any) (*strings.Reader, error) {
+	if buf, err := json.Marshal(obj); err != nil {
+		return nil, err
+	} else {
+		return strings.NewReader(string(buf)), nil
+	}
 }
