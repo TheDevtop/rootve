@@ -24,8 +24,10 @@ func newVmach(name string, vc libve.VirtConfig) *vmach {
 	newMach.config = vc
 	newMach.state = libcsrv.StateOff
 	newMach.proc = exec.Command(libcsrv.RootexecPath, libcsrv.RootexecFlagName, name)
-	newMach.proc.SysProcAttr.Setpgid = true
-	newMach.proc.SysProcAttr.Setsid = true
+	newMach.proc.SysProcAttr = &unix.SysProcAttr{
+		Setpgid: true,
+		Setsid:  true,
+	}
 	return newMach
 }
 
