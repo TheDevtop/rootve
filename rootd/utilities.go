@@ -23,19 +23,25 @@ func sigListen() {
 	ipcfs.DeregisterNetwork("rootd", srv)
 
 	// Stop the environments
+	autostop()
+
+	close(ch)
+	os.Exit(0)
+}
+
+// Autostop the VE's
+func autostop() {
 	lock.Lock()
 	for key, vmp := range vmap {
 		if vmp != nil {
 			if vmp.proc != nil {
-				vmp.Switch(libcsrv.StateOff)
-				log.Printf("Stopped %s\n", key)
+				if vmp.Switch(libcsrv.StateOff) == nil {
+					log.Printf("Stopped %s\n", key)
+				}
 			}
 		}
 	}
 	lock.Unlock()
-
-	close(ch)
-	os.Exit(0)
 }
 
 // Autoboot VE's where autoboot=true
