@@ -59,7 +59,7 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Start a named Virtual Environment
+// Stop a named Virtual Environment
 func apiStop(w http.ResponseWriter, r *http.Request) {
 	var (
 		err      error
@@ -92,7 +92,7 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Attempt to start the vmp
+	// Attempt to stop the vmp
 	if err = vmp.Switch(libcsrv.StateOff); err != nil {
 		log.Println(err)
 		libcsrv.WriteJson(w, libcsrv.FormMessage{

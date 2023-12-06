@@ -24,6 +24,8 @@ func newVmach(name string, vc libve.VirtConfig) *vmach {
 	newMach.config = vc
 	newMach.state = libcsrv.StateOff
 	newMach.proc = exec.Command(libcsrv.RootexecPath, libcsrv.RootexecFlagName, name)
+	newMach.proc.SysProcAttr.Setpgid = true
+	newMach.proc.SysProcAttr.Setsid = true
 	return newMach
 }
 
@@ -47,7 +49,7 @@ func (vmp *vmach) Switch(state byte) error {
 	case libcsrv.StateOn:
 		switch state {
 		case libcsrv.StateOff:
-			if err = vmp.proc.Cancel(); err != nil {
+			if err = unix.Kill(vmp.proc.Process.Pid, unix.SIGKILL); err != nil {
 				return err
 			}
 			vmp.state = state
@@ -63,7 +65,7 @@ func (vmp *vmach) Switch(state byte) error {
 	case libcsrv.StatePaused:
 		switch state {
 		case libcsrv.StateOff:
-			if err = vmp.proc.Cancel(); err != nil {
+			if err = unix.Kill(vmp.proc.Process.Pid, unix.SIGKILL); err != nil {
 				return err
 			}
 			vmp.state = state
