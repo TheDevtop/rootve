@@ -1,4 +1,4 @@
-package cmdShell
+package main
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
 )
 
-const TagShell = "shell"
+const cmdShell = "shell"
 
 // Run shell via rootexec
 func runShell() error {
@@ -21,7 +21,7 @@ func runShell() error {
 	return cmd.Run()
 }
 
-func ShellMain() {
+func shellMain() int {
 	var (
 		err     error
 		res     *http.Response
@@ -31,8 +31,8 @@ func ShellMain() {
 	)
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: shell [name]")
-		os.Exit(2)
+		fmt.Printf("Usage: %s [name]\n", cmdShell)
+		return 2
 	}
 
 	if body, err = libcsrv.MakeJsonReader(libcsrv.FormMessage{
@@ -40,26 +40,27 @@ func ShellMain() {
 		Data:  os.Args[1],
 	}); err != nil {
 		fmt.Println(err)
-		os.Exit(2)
+		return 2
 	}
 
 	if res, err = client.Post(libcsrv.MapProtocol(libcsrv.RouteOnline), "", body); err != nil {
 		fmt.Println(err)
-		os.Exit(2)
+		return 2
 	}
 	if err = libcsrv.ReadJson(res.Body, resForm); err != nil {
 		fmt.Println(err)
-		os.Exit(2)
+		return 2
 	}
 
 	if resForm.Error || !resForm.Data {
 		fmt.Printf("Could not determine the state of %s\n", os.Args[1])
-		os.Exit(2)
+		return 2
 	}
 
 	if err = runShell(); err != nil {
 		fmt.Println(err)
-		os.Exit(2)
+		return 2
 	}
-	os.Exit(0)
+
+	return 0
 }

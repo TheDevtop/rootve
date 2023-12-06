@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TheDevtop/rootve/rootctl/cmdList"
-	"github.com/TheDevtop/rootve/rootctl/cmdShell"
 	"github.com/TheDevtop/rootve/rootctl/cmdState"
 )
 
@@ -14,21 +12,26 @@ func usage() {
 }
 
 func main() {
+	var (
+		cmdFlag  string
+		exitCode int
+	)
+
 	if len(os.Args) < 2 {
 		usage()
 		os.Exit(1)
 	}
 
-	cmdTag := os.Args[1]
+	cmdFlag = os.Args[1]
 	os.Args = os.Args[1:]
 
-	switch cmdTag {
-	case cmdList.TagLs:
-		cmdList.LsMain()
-	case cmdList.TagPs:
-		cmdList.PsMain()
-	case cmdShell.TagShell:
-		cmdShell.ShellMain()
+	switch cmdFlag {
+	case cmdLs:
+		exitCode = lsMain()
+	case cmdPs:
+		exitCode = psMain()
+	case cmdShell:
+		exitCode = shellMain()
 	case cmdState.TagStart:
 		cmdState.StartMain()
 	case cmdState.TagStop:
@@ -39,7 +42,8 @@ func main() {
 		cmdState.ResumeMain()
 	default:
 		usage()
-		os.Exit(1)
+		exitCode = 1
 	}
 
+	os.Exit(exitCode)
 }
