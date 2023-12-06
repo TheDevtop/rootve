@@ -31,7 +31,7 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 	lock.Unlock()
 
 	// Check if vmp is valid
-	if vmp != nil {
+	if vmp == nil {
 		log.Printf("%s: %s\n", errVmapEntry, nameForm.Data)
 		libcsrv.WriteJson(w, libcsrv.FormMessage{
 			Error: true,
@@ -83,7 +83,7 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 	lock.Unlock()
 
 	// Check if vmp is valid
-	if vmp != nil {
+	if vmp == nil {
 		log.Printf("%s: %s\n", errVmapEntry, nameForm.Data)
 		libcsrv.WriteJson(w, libcsrv.FormMessage{
 			Error: true,

@@ -53,7 +53,7 @@ func shellMain() int {
 	}
 
 	if resForm.Error || !resForm.Data {
-		fmt.Printf("Could not determine the state of %s\n", os.Args[1])
+		fmt.Printf("Could not login to %s\n", os.Args[1])
 		return 2
 	}
 
