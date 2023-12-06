@@ -25,9 +25,13 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Find the vmp, critical section
+	// Find the vmp
 	lock.Lock()
-	if vmp = vmap[nameForm.Data]; vmp != nil {
+	vmp = vmap[nameForm.Data]
+	lock.Unlock()
+
+	// Check if vmp is valid
+	if vmp != nil {
 		log.Printf("%s: %s\n", errVmapEntry, nameForm.Data)
 		libcsrv.WriteJson(w, libcsrv.FormMessage{
 			Error: true,
@@ -35,7 +39,6 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	lock.Unlock()
 
 	// Attempt to start the vmp
 	if err = vmp.Switch(libcsrv.StateOn); err != nil {
