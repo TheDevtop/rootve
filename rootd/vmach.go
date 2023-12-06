@@ -30,6 +30,12 @@ func newVmach(name string, vc libve.VirtConfig) *vmach {
 	return newMach
 }
 
+// Safely stop a "Virtual Machine"
+func (vmp *vmach) safeStop() {
+	unix.Kill(vmp.proc.Process.Pid, unix.SIGKILL)
+	vmp.proc.Process.Release()
+}
+
 // Executes the state switch function
 func (vmp *vmach) Switch(state byte) error {
 	var (
@@ -50,9 +56,7 @@ func (vmp *vmach) Switch(state byte) error {
 	case libcsrv.StateOn:
 		switch state {
 		case libcsrv.StateOff:
-			if err = unix.Kill(vmp.proc.Process.Pid, unix.SIGKILL); err != nil {
-				return err
-			}
+			vmp.safeStop()
 			vmp.state = state
 			return nil
 		case libcsrv.StatePaused:
@@ -66,9 +70,7 @@ func (vmp *vmach) Switch(state byte) error {
 	case libcsrv.StatePaused:
 		switch state {
 		case libcsrv.StateOff:
-			if err = unix.Kill(vmp.proc.Process.Pid, unix.SIGKILL); err != nil {
-				return err
-			}
+			vmp.safeStop()
 			vmp.state = state
 			return nil
 		case libcsrv.StateOn:
