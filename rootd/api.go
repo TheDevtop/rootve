@@ -61,7 +61,54 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 
 // Start a named Virtual Environment
 func apiStop(w http.ResponseWriter, r *http.Request) {
+	var (
+		err      error
+		vmp      *vmach
+		nameForm = new(libcsrv.FormMessage)
+	)
 
+	// Read the name from the form
+	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
+		log.Println(err)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		return
+	}
+
+	// Find the vmp
+	lock.Lock()
+	vmp = vmap[nameForm.Data]
+	lock.Unlock()
+
+	// Check if vmp is valid
+	if vmp != nil {
+		log.Printf("%s: %s\n", errVmapEntry, nameForm.Data)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  errVmapEntry.Error(),
+		})
+		return
+	}
+
+	// Attempt to start the vmp
+	if err = vmp.Switch(libcsrv.StateOff); err != nil {
+		log.Println(err)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		return
+	}
+
+	// Send a response message
+	if err = libcsrv.WriteJson(w, libcsrv.FormMessage{
+		Error: false,
+		Data:  "",
+	}); err != nil {
+		log.Println(err)
+	}
 }
 
 // List all Virtual Environments
