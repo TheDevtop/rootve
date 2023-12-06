@@ -1,10 +1,5 @@
 package libcsrv
 
-type State struct {
-	Byte  byte
-	Label string
-}
-
 // States
 const (
 	StateOff    byte = 0x00
