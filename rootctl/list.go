@@ -50,7 +50,7 @@ func psMain() int {
 	)
 
 	if len(os.Args) < 2 {
-		fmt.Printf("Usage: %s [name]\n", cmdLs)
+		fmt.Printf("Usage: %s [name]\n", cmdPs)
 		return 2
 	}
 

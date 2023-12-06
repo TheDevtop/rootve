@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-
-	"github.com/TheDevtop/rootve/rootctl/cmdState"
 )
 
 func usage() {
@@ -32,14 +30,10 @@ func main() {
 		exitCode = psMain()
 	case cmdShell:
 		exitCode = shellMain()
-	case cmdState.TagStart:
-		cmdState.StartMain()
-	case cmdState.TagStop:
-		cmdState.StopMain()
-	case cmdState.TagPause:
-		cmdState.PauseMain()
-	case cmdState.TagResume:
-		cmdState.ResumeMain()
+	case cmdStart:
+		exitCode = startMain()
+	case cmdStop:
+		exitCode = stopMain()
 	default:
 		usage()
 		exitCode = 1
