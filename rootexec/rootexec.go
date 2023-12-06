@@ -15,6 +15,8 @@ func usage() {
 }
 
 func main() {
+	const noneStr = "[None]"
+
 	var (
 		mvc   map[string]libve.VirtConfig
 		vc    libve.VirtConfig
@@ -25,8 +27,8 @@ func main() {
 
 	// Setup and parse flags
 	var (
-		flagName     = flag.String("n", libve.NoneStr, "Specify virtual environment")
-		flagOverride = flag.String("c", libve.NoneStr, "Specify command override")
+		flagName     = flag.String("n", noneStr, "Specify virtual environment")
+		flagOverride = flag.String("c", noneStr, "Specify command override")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -41,7 +43,7 @@ func main() {
 	}
 
 	// Check if we need to override the command
-	if *flagOverride != libve.NoneStr {
+	if *flagOverride != noneStr {
 		vc.CommandPath, vc.CommandArgs = parseCommand(*flagOverride)
 	}
 
