@@ -24,16 +24,23 @@ func newVmach(name string, vc libve.VirtConfig) *vmach {
 	newMach.config = vc
 	newMach.state = libcsrv.StateOff
 	newMach.proc = exec.Command(libcsrv.RootexecPath, libcsrv.RootexecFlagName, name)
-	newMach.proc.SysProcAttr = &unix.SysProcAttr{
-		Setpgid: true,
-	}
 	return newMach
 }
 
 // Safely stop a "Virtual Machine"
 func (vmp *vmach) safeStop() {
-	unix.Kill(vmp.proc.Process.Pid, unix.SIGKILL)
+	unix.Kill(vmp.proc.Process.Pid, unix.SIGTERM)
 	vmp.proc.Process.Release()
+}
+
+// Safely pause a "Virtual Machine"
+func (vmp *vmach) safePause() error {
+	return vmp.proc.Process.Signal(unix.SIGTSTP)
+}
+
+// Safely resume a "Virtual Machine"
+func (vmp *vmach) safeResume() error {
+	return vmp.proc.Process.Signal(unix.SIGCONT)
 }
 
 // Executes the state switch function
@@ -43,6 +50,8 @@ func (vmp *vmach) Switch(state byte) error {
 		stateErr = errors.New("invalid state transition")
 	)
 
+	// Outer state -> current
+	// Inner state -> next
 	switch vmp.state {
 	case libcsrv.StateOff:
 		if state == libcsrv.StateOn {
@@ -60,7 +69,7 @@ func (vmp *vmach) Switch(state byte) error {
 			vmp.state = state
 			return nil
 		case libcsrv.StatePaused:
-			if err = vmp.proc.Process.Signal(unix.SIGTSTP); err != nil {
+			if err = vmp.safePause(); err != nil {
 				return err
 			}
 			vmp.state = state
@@ -74,7 +83,7 @@ func (vmp *vmach) Switch(state byte) error {
 			vmp.state = state
 			return nil
 		case libcsrv.StateOn:
-			if err = vmp.proc.Process.Signal(unix.SIGCONT); err != nil {
+			if err = vmp.safeResume(); err != nil {
 				return err
 			}
 			vmp.state = state
