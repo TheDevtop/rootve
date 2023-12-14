@@ -51,7 +51,6 @@ func main() {
 	mux.HandleFunc(libcsrv.RouteListOnline, apiListOnline)
 	mux.HandleFunc(libcsrv.RoutePause, apiPause)
 	mux.HandleFunc(libcsrv.RouteResume, apiResume)
-	mux.HandleFunc(libcsrv.RouteOnline, apiOnline)
 	log.Println("Initialized multiplexer")
 
 	// Setup signal listener

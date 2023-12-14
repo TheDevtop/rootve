@@ -11,5 +11,4 @@ const (
 	RouteListOnline = "/api/list/online"
 	RoutePause      = "/api/pause"
 	RouteResume     = "/api/resume"
-	RouteOnline     = "/api/online"
 )

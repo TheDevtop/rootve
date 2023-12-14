@@ -159,7 +159,3 @@ func apiPause(w http.ResponseWriter, r *http.Request) {
 func apiResume(w http.ResponseWriter, r *http.Request) {
 
 }
-
-// Assert if virtual environment is online
-func apiOnline(w http.ResponseWriter, r *http.Request) {
-}
