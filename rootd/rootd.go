@@ -13,8 +13,8 @@ import (
 
 // Global data
 var (
-	store librex.RexMap     // Stores the rootexec instances
-	srv   *net.UnixListener // Server
+	globalRexMap librex.RexMap     // Stores the rootexec instances
+	globalServer *net.UnixListener // Server
 )
 
 func main() {
@@ -28,7 +28,7 @@ func main() {
 	log.Println("Starting RootVE Server...")
 
 	// Register server endpoint
-	if srv, err = ipcfs.RegisterNetwork("rootd"); err != nil {
+	if globalServer, err = ipcfs.RegisterNetwork("rootd"); err != nil {
 		log.Fatalln(err)
 	}
 	log.Println("Registered server endpoint")
@@ -37,7 +37,7 @@ func main() {
 	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
 		log.Fatalln(err)
 	}
-	store = ConfigToRexMap(mvc)
+	globalRexMap = ConfigToRexMap(mvc)
 	log.Println("Initialized global structures")
 
 	// Autoboot enabled VE's
@@ -60,7 +60,7 @@ func main() {
 
 	// Serve WebAPI
 	log.Println("Serving API")
-	if err = http.Serve(srv, mux); err != nil {
+	if err = http.Serve(globalServer, mux); err != nil {
 		log.Println(err)
 	}
 }
