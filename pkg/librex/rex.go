@@ -28,9 +28,7 @@ func (rexPtr *Rex) Stop() error {
 	if err := rexPtr.proc.Process.Kill(); err != nil {
 		return err
 	}
-	if err := rexPtr.proc.Process.Release(); err != nil {
-		return err
-	}
+	rexPtr.proc.Process.Wait()
 	rexPtr.State = StateOff
 	return nil
 }
