@@ -61,7 +61,7 @@ func (ve *VirtEnv) Mount() {
 
 // Attempt to initialize devices
 func (ve *VirtEnv) Devinit() {
-	devcmd := exec.Command("/dev/MAKEDEV", "std", "fd", "ptm", "tty0")
+	devcmd := exec.Command("/dev/MAKEDEV", "-u", "std", "fd", "ptm", "tty0")
 	devcmd.Dir = "/dev/"
 	devcmd.Run()
 }

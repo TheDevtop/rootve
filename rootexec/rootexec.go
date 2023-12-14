@@ -61,7 +61,7 @@ func main() {
 		panic(err)
 	}
 
-	// Initialize devices
+	// Attempt to initialize devices
 	ve.Devinit()
 
 	// Attach std devices
