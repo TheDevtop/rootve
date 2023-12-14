@@ -31,17 +31,14 @@ func sigListen() {
 
 // Autostop the VE's
 func autostop() {
-	// globalRexMap.Lock.Lock()
-	// for key, vmp := range globalRexMap.Map {
-	// 	if vmp != nil {
-	// 		if vmp.proc != nil {
-	// 			if vmp.Switch(libcsrv.StateOff) == nil {
-	// 				log.Printf("Stopped %s\n", key)
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// globalRexMap.Lock.Unlock()
+	globalRexMap.Lock.Lock()
+	for key, rex := range globalRexMap.Map {
+		if err := rex.Stop(); err != nil {
+			log.Println(err)
+		}
+		log.Printf("Stopped: %s\n", key)
+	}
+	globalRexMap.Lock.Unlock()
 }
 
 // Autoboot VE's where autoboot=true
