@@ -9,15 +9,23 @@ import (
 const ConfigPath = "/etc/rootve"
 
 type VirtConfig struct {
+	// Environmental
 	Root        string
 	Autoboot    bool
 	Directory   string
 	Uid         int
 	Gid         int
 	Environment []string
-	Interface   string
+
+	// Client process
 	CommandPath string
 	CommandArgs []string
+
+	// Networking
+	Networking bool
+	Bridge     string
+	Interface  string
+	Address    string
 }
 
 // Read configuration map from toml file
