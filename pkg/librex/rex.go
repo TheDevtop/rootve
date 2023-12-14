@@ -25,7 +25,7 @@ func (rexPtr *Rex) Start() error {
 
 // Stop rootexec instance
 func (rexPtr *Rex) Stop() error {
-	if err := rexPtr.proc.Process.Signal(unix.SIGSTOP); err != nil {
+	if err := rexPtr.proc.Process.Kill(); err != nil {
 		return err
 	}
 	if err := rexPtr.proc.Process.Release(); err != nil {
