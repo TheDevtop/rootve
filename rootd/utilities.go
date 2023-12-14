@@ -6,7 +6,6 @@ import (
 	"os/signal"
 
 	"github.com/TheDevtop/ipcfs/go/ipcfs"
-	"github.com/TheDevtop/rootve/pkg/libcsrv"
 	"github.com/TheDevtop/rootve/pkg/librex"
 	"github.com/TheDevtop/rootve/pkg/libve"
 	"golang.org/x/sys/unix"
@@ -32,31 +31,31 @@ func sigListen() {
 
 // Autostop the VE's
 func autostop() {
-	globalRexMap.Lock.Lock()
-	for key, vmp := range globalRexMap.Map {
-		if vmp != nil {
-			if vmp.proc != nil {
-				if vmp.Switch(libcsrv.StateOff) == nil {
-					log.Printf("Stopped %s\n", key)
-				}
-			}
-		}
-	}
-	globalRexMap.Lock.Lock()
+	// globalRexMap.Lock.Lock()
+	// for key, vmp := range globalRexMap.Map {
+	// 	if vmp != nil {
+	// 		if vmp.proc != nil {
+	// 			if vmp.Switch(libcsrv.StateOff) == nil {
+	// 				log.Printf("Stopped %s\n", key)
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// globalRexMap.Lock.Unlock()
 }
 
 // Autoboot VE's where autoboot=true
 func autoboot() {
-	var err error
-	for key, vmp := range vmap {
-		if vmp.config.Autoboot && vmp.proc != nil {
-			if err = vmp.Switch(libcsrv.StateOn); err != nil {
-				log.Printf("Could not autoboot %s: %s\n", key, err)
-			} else {
-				log.Printf("Autobooted %s\n", key)
+	globalRexMap.Lock.Lock()
+	for key, rex := range globalRexMap.Map {
+		if rex.Config.Autoboot {
+			if err := rex.Start(); err != nil {
+				log.Println(err)
 			}
+			log.Printf("Started: %s\n", key)
 		}
 	}
+	globalRexMap.Lock.Unlock()
 }
 
 // Convert configmap to rexmap

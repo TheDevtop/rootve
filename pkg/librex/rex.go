@@ -15,6 +15,13 @@ type Rex struct {
 }
 
 // Start and execute rootexec instance
+func (rexPtr *Rex) Start() error {
+	if err := rexPtr.proc.Start(); err != nil {
+		return err
+	}
+	rexPtr.State = StateOn
+	return nil
+}
 
 // Stop rootexec instance
 
@@ -24,12 +31,12 @@ type Rex struct {
 
 // Allocate rootexec instance structure
 func NewRex(name string, vc libve.VirtConfig) *Rex {
-	r := new(Rex)
-	r.Config = vc
-	r.State = StateOff
-	r.proc = exec.Command(RootexecPath, RootexecFlagName, name)
-	r.proc.SysProcAttr = &unix.SysProcAttr{
+	rexPtr := new(Rex)
+	rexPtr.Config = vc
+	rexPtr.State = StateOff
+	rexPtr.proc = exec.Command(RootexecPath, RootexecFlagName, name)
+	rexPtr.proc.SysProcAttr = &unix.SysProcAttr{
 		Setpgid: true,
 	}
-	return r
+	return rexPtr
 }

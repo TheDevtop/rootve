@@ -33,12 +33,12 @@ func main() {
 	}
 	log.Println("Registered server endpoint")
 
-	// Read /etc/rootve, initialize RexMap
+	// Read /etc/rootve, initialize the global RexMap
 	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
 		log.Fatalln(err)
 	}
 	globalRexMap = ConfigToRexMap(mvc)
-	log.Println("Initialized global structures")
+	log.Println("Initialized global data")
 
 	// Autoboot enabled VE's
 	autoboot()

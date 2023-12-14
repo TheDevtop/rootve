@@ -1,17 +1,17 @@
 package librex
 
-// States
-const (
-	StateOff    byte = 0x00
-	StateOn     byte = 0xff
-	StatePaused byte = 0x0f
-)
-
 // Rootexec data
 const (
 	RootexecPath         = "/usr/local/bin/rootexec"
 	RootexecFlagName     = "-n"
 	RootexecFlagOverride = "-c"
+)
+
+// States
+const (
+	StateOff    byte = 0x00
+	StateOn     byte = 0xff
+	StatePaused byte = 0x0f
 )
 
 // State labels
