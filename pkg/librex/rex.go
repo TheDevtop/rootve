@@ -14,6 +14,16 @@ type Rex struct {
 	proc   *exec.Cmd
 }
 
+// Start and execute rootexec instance
+
+// Stop rootexec instance
+
+// Pause rootexec instance
+
+// Resume rootexec instance
+
+// Switch state of rootexec instance
+
 // Allocate rootexec instance structure
 func NewRex(name string, vc libve.VirtConfig) *Rex {
 	r := new(Rex)

@@ -7,6 +7,7 @@ import (
 
 	"github.com/TheDevtop/ipcfs/go/ipcfs"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
+	"github.com/TheDevtop/rootve/pkg/librex"
 	"github.com/TheDevtop/rootve/pkg/libve"
 	"golang.org/x/sys/unix"
 )
@@ -31,8 +32,8 @@ func sigListen() {
 
 // Autostop the VE's
 func autostop() {
-	lock.Lock()
-	for key, vmp := range vmap {
+	store.LockPtr.Lock()
+	for key, vmp := range store.MapPtr {
 		if vmp != nil {
 			if vmp.proc != nil {
 				if vmp.Switch(libcsrv.StateOff) == nil {
@@ -41,14 +42,12 @@ func autostop() {
 			}
 		}
 	}
-	lock.Unlock()
+	store.LockPtr.Lock()
 }
 
 // Autoboot VE's where autoboot=true
 func autoboot() {
 	var err error
-
-	lock.Lock()
 	for key, vmp := range vmap {
 		if vmp.config.Autoboot && vmp.proc != nil {
 			if err = vmp.Switch(libcsrv.StateOn); err != nil {
@@ -58,14 +57,13 @@ func autoboot() {
 			}
 		}
 	}
-	lock.Unlock()
 }
 
-// Allocate and initialize a "Virtual Machine Map"
-func makeVmap(mvc map[string]libve.VirtConfig) map[string]*vmach {
-	newMap := make(map[string]*vmach, len(mvc))
+// Convert configmap to rexmap
+func ConfigToRexMap(mvc map[string]libve.VirtConfig) librex.RexMap {
+	rm := librex.MakeRexMap(len(mvc))
 	for name, vc := range mvc {
-		newMap[name] = newVmach(name, vc)
+		rm.Store(name, librex.NewRex(name, vc))
 	}
-	return newMap
+	return rm
 }

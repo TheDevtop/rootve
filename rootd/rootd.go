@@ -4,21 +4,18 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"sync"
 
 	"github.com/TheDevtop/ipcfs/go/ipcfs"
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
+	"github.com/TheDevtop/rootve/pkg/librex"
 	"github.com/TheDevtop/rootve/pkg/libve"
 )
 
-// The global lookup map and lock
+// Global data
 var (
-	vmap map[string]*vmach
-	lock sync.Mutex
+	store librex.RexMap     // Stores the rootexec instances
+	srv   *net.UnixListener // Server
 )
-
-// Global server (/srv/rootd)
-var srv *net.UnixListener
 
 func main() {
 	var (
@@ -36,11 +33,11 @@ func main() {
 	}
 	log.Println("Registered server endpoint")
 
-	// Read /etc/rootve, initialize vmap
+	// Read /etc/rootve, initialize RexMap
 	if mvc, err = libve.ReadConfig(libve.ConfigPath); err != nil {
 		log.Fatalln(err)
 	}
-	vmap = makeVmap(mvc)
+	store = ConfigToRexMap(mvc)
 	log.Println("Initialized global structures")
 
 	// Autoboot enabled VE's
