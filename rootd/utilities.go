@@ -21,7 +21,7 @@ func sigListen() {
 	<-ch
 
 	// Deregister server endpoint
-	ipcfs.DeregisterNetwork("rootd", srv)
+	ipcfs.DeregisterNetwork("rootd", globalServer)
 
 	// Stop the environments
 	autostop()
@@ -32,8 +32,8 @@ func sigListen() {
 
 // Autostop the VE's
 func autostop() {
-	store.LockPtr.Lock()
-	for key, vmp := range store.MapPtr {
+	globalRexMap.Lock.Lock()
+	for key, vmp := range globalRexMap.Map {
 		if vmp != nil {
 			if vmp.proc != nil {
 				if vmp.Switch(libcsrv.StateOff) == nil {
@@ -42,7 +42,7 @@ func autostop() {
 			}
 		}
 	}
-	store.LockPtr.Lock()
+	globalRexMap.Lock.Lock()
 }
 
 // Autoboot VE's where autoboot=true
@@ -63,7 +63,7 @@ func autoboot() {
 func ConfigToRexMap(mvc map[string]libve.VirtConfig) librex.RexMap {
 	rm := librex.MakeRexMap(len(mvc))
 	for name, vc := range mvc {
-		rm.Store(name, librex.NewRex(name, vc))
+		rm.Map[name] = librex.NewRex(name, vc)
 	}
 	return rm
 }

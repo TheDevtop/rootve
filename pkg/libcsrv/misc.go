@@ -3,13 +3,6 @@ package libcsrv
 // Path to server socket
 const SocketPath = "/srv/rootd"
 
-// Rootexec data
-const (
-	RootexecPath         = "/usr/local/bin/rootexec"
-	RootexecFlagName     = "-n"
-	RootexecFlagOverride = "-c"
-)
-
 // WebAPI Routes
 const (
 	RouteStart      = "/api/start"
