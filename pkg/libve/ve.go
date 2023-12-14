@@ -59,9 +59,6 @@ func (ve *VirtEnv) Mount() {
 func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve := new(VirtEnv)
 	ve.proc = *new(exec.Cmd)
-	ve.proc.SysProcAttr = &unix.SysProcAttr{
-		Setpgid: true,
-	}
 
 	ve.root = vc.Root
 	ve.proc.Dir = vc.Directory
