@@ -25,7 +25,7 @@ type VirtConfig struct {
 	Networking bool
 	Bridge     string
 	Interface  string
-	Address    string
+	AddressV4  string
 }
 
 // Read configuration map from toml file
@@ -68,8 +68,11 @@ func MakeVirtConfig() VirtConfig {
 		Uid:         0,
 		Gid:         0,
 		Environment: []string{"TERM=xterm"},
-		Interface:   "lo",
 		CommandPath: "/bin/ksh",
 		CommandArgs: []string{"-l"},
+		Networking:  false,
+		Bridge:      "br0",
+		Interface:   "lo",
+		AddressV4:   "0.0.0.0",
 	}
 }

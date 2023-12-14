@@ -61,11 +61,19 @@ func main() {
 		panic(err)
 	}
 
+	// Initialize devices
+	ve.Devinit()
+
 	// Attach std devices
 	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
 
 	// Mount filesystems
 	ve.Mount()
+
+	// Attempt to configure networking
+	if err = ve.Linkup(); err != nil {
+		fmt.Println(err)
+	}
 
 	// Execute the process, and finish
 	if err = ve.Execute(); err != nil {

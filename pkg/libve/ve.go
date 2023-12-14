@@ -8,10 +8,14 @@ import (
 )
 
 type VirtEnv struct {
-	root string
-	proc exec.Cmd
-	uid  int
-	gid  int
+	root   string
+	proc   exec.Cmd
+	uid    int
+	gid    int
+	net    bool
+	netbr  string
+	netif  string
+	addrv4 string
 }
 
 // Change root and directory
@@ -55,6 +59,37 @@ func (ve *VirtEnv) Mount() {
 	exec.Command("/sbin/mount", "-a").Run()
 }
 
+// Attempt to initialize devices
+func (ve *VirtEnv) Devinit() {
+	devcmd := exec.Command("/dev/MAKEDEV", "std", "fd", "ptm", "tty0")
+	devcmd.Dir = "/dev/"
+	devcmd.Run()
+}
+
+// Configure networking
+func (ve *VirtEnv) Linkup() error {
+	var (
+		err error
+		cmd *exec.Cmd
+	)
+
+	if !ve.net {
+		return nil
+	}
+
+	cmd = exec.Command("/sbin/ifconfig", ve.netif, "create")
+	if err = cmd.Run(); err != nil {
+		return err
+	}
+
+	cmd = exec.Command("/sbin/brconfig", ve.netbr, "add", ve.netif)
+	if err = cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Allocate virtual environment
 func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve := new(VirtEnv)
@@ -67,5 +102,10 @@ func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve.proc.Env = vc.Environment
 	ve.proc.Path = vc.CommandPath
 	ve.proc.Args = vc.CommandArgs
+	ve.net = vc.Networking
+	ve.netbr = vc.Bridge
+	ve.netif = vc.Interface
+	ve.addrv4 = vc.AddressV4
+
 	return ve
 }
