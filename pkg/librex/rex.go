@@ -25,7 +25,7 @@ func (rexPtr *Rex) Start() error {
 
 // Stop rootexec instance
 func (rexPtr *Rex) Stop() error {
-	if err := rexPtr.proc.Process.Kill(); err != nil {
+	if err := unix.Kill(-rexPtr.proc.SysProcAttr.Pgid, unix.SIGKILL); err != nil {
 		return err
 	}
 	rexPtr.proc.Process.Wait()

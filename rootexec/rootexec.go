@@ -4,10 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"os/signal"
 
 	"github.com/TheDevtop/rootve/pkg/libve"
-	"golang.org/x/sys/unix"
 )
 
 func usage() {
@@ -25,7 +23,6 @@ func main() {
 		avail bool
 		ve    *libve.VirtEnv
 		err   error
-		ch    chan os.Signal
 	)
 
 	// Setup and parse flags
@@ -70,17 +67,10 @@ func main() {
 	// Mount filesystems
 	ve.Mount()
 
-	// Allocate channel and setup signal
-	ch = make(chan os.Signal, 1)
-	signal.Notify(ch, os.Interrupt, unix.SIGTERM)
-
 	// Execute the process, and finish
 	if err = ve.Execute(); err != nil {
 		fmt.Println(err)
 	}
 
-	// Wait for the signal
-	<-ch
-	close(ch)
 	os.Exit(0)
 }
