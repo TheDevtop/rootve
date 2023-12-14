@@ -34,6 +34,8 @@ func main() {
 		exitCode = startMain()
 	case cmdStop:
 		exitCode = stopMain()
+	case cmdRemove:
+		exitCode = removeMain()
 	default:
 		usage()
 		exitCode = 1
