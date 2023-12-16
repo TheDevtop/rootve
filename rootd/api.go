@@ -153,12 +153,88 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 
 // Pause a named Virtual Environment
 func apiPause(w http.ResponseWriter, r *http.Request) {
+	var (
+		err      error
+		rex      *librex.Rex
+		nameForm = new(libcsrv.FormMessage)
+	)
 
+	// Read the name from the form
+	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
+		log.Println(err)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		return
+	}
+
+	// Begin critical section
+	globalRexMap.Lock.Lock()
+	if rex = globalRexMap.Map[nameForm.Data]; rex != nil {
+		err = rex.Pause()
+		globalRexMap.Map[nameForm.Data] = rex
+	}
+	globalRexMap.Lock.Unlock()
+	// End critical section
+
+	// Send a response message
+	if err != nil {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		log.Println(err)
+		return
+	}
+
+	libcsrv.WriteJson(w, libcsrv.FormMessage{
+		Error: false,
+		Data:  "",
+	})
 }
 
 // Resume a named Virtual Environment
 func apiResume(w http.ResponseWriter, r *http.Request) {
+	var (
+		err      error
+		rex      *librex.Rex
+		nameForm = new(libcsrv.FormMessage)
+	)
 
+	// Read the name from the form
+	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
+		log.Println(err)
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		return
+	}
+
+	// Begin critical section
+	globalRexMap.Lock.Lock()
+	if rex = globalRexMap.Map[nameForm.Data]; rex != nil {
+		err = rex.Resume()
+		globalRexMap.Map[nameForm.Data] = rex
+	}
+	globalRexMap.Lock.Unlock()
+	// End critical section
+
+	// Send a response message
+	if err != nil {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: true,
+			Data:  err.Error(),
+		})
+		log.Println(err)
+		return
+	}
+
+	libcsrv.WriteJson(w, libcsrv.FormMessage{
+		Error: false,
+		Data:  "",
+	})
 }
 
 // Remove a named Virtual Environment

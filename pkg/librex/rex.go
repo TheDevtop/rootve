@@ -34,8 +34,22 @@ func (rexPtr *Rex) Stop() error {
 }
 
 // Pause rootexec instance
+func (rexPtr *Rex) Pause() error {
+	if err := rexPtr.proc.Process.Signal(unix.SIGSTOP); err != nil {
+		return err
+	}
+	rexPtr.State = StatePaused
+	return nil
+}
 
 // Resume rootexec instance
+func (rexPtr *Rex) Resume() error {
+	if err := rexPtr.proc.Process.Signal(unix.SIGCONT); err != nil {
+		return err
+	}
+	rexPtr.State = StateOn
+	return nil
+}
 
 // Allocate rootexec instance structure
 func NewRex(name string, vc libve.VirtConfig) *Rex {
