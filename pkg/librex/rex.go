@@ -4,6 +4,7 @@ import (
 	"os/exec"
 
 	"github.com/TheDevtop/rootve/pkg/libve"
+	"golang.org/x/sys/unix"
 )
 
 // Rootexec instance structure
@@ -24,7 +25,7 @@ func (rexPtr *Rex) Start() error {
 
 // Stop rootexec instance
 func (rexPtr *Rex) Stop() error {
-	if err := rexPtr.proc.Process.Kill(); err != nil {
+	if err := unix.Kill(-rexPtr.proc.Process.Pid, unix.SIGKILL); err != nil {
 		return err
 	}
 	rexPtr.proc.Process.Wait()
