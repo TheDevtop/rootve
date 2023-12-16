@@ -56,12 +56,17 @@ func main() {
 		panic(err)
 	}
 
+	// Create new process group
+	if err = ve.NewProcGroup(); err != nil {
+		panic(err)
+	}
+
 	// Become specified user/group
 	if err = ve.SetCreds(); err != nil {
 		panic(err)
 	}
 
-	// Attempt to initialize devices
+	// Initialize devices
 	ve.Devinit()
 
 	// Attach std devices
@@ -70,7 +75,7 @@ func main() {
 	// Mount filesystems
 	ve.Mount()
 
-	// Attempt to configure networking
+	// Initialize networking
 	if err = ve.Linkup(); err != nil {
 		fmt.Println(err)
 	}

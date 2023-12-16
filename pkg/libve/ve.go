@@ -54,6 +54,11 @@ func (ve *VirtEnv) SetCreds() error {
 	return nil
 }
 
+// Create new process group
+func (ve *VirtEnv) NewProcGroup() error {
+	return unix.Setpgid(os.Getpid(), 0)
+}
+
 // Attempt to mount all filesystems
 func (ve *VirtEnv) Mount() {
 	exec.Command("/sbin/mount", "-a").Run()
