@@ -35,7 +35,7 @@ func (rexPtr *Rex) Stop() error {
 
 // Pause rootexec instance
 func (rexPtr *Rex) Pause() error {
-	if err := rexPtr.proc.Process.Signal(unix.SIGSTOP); err != nil {
+	if err := unix.Kill(-rexPtr.proc.Process.Pid, unix.SIGSTOP); err != nil {
 		return err
 	}
 	rexPtr.State = StatePaused
@@ -44,7 +44,7 @@ func (rexPtr *Rex) Pause() error {
 
 // Resume rootexec instance
 func (rexPtr *Rex) Resume() error {
-	if err := rexPtr.proc.Process.Signal(unix.SIGCONT); err != nil {
+	if err := unix.Kill(-rexPtr.proc.Process.Pid, unix.SIGCONT); err != nil {
 		return err
 	}
 	rexPtr.State = StateOn
