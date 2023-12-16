@@ -4,7 +4,6 @@ import (
 	"os/exec"
 
 	"github.com/TheDevtop/rootve/pkg/libve"
-	"golang.org/x/sys/unix"
 )
 
 // Rootexec instance structure
@@ -43,8 +42,5 @@ func NewRex(name string, vc libve.VirtConfig) *Rex {
 	rexPtr.Config = vc
 	rexPtr.State = StateOff
 	rexPtr.proc = exec.Command(RootexecPath, RootexecFlagName, name)
-	rexPtr.proc.SysProcAttr = &unix.SysProcAttr{
-		Setpgid: true,
-	}
 	return rexPtr
 }
