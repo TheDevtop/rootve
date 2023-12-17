@@ -28,6 +28,7 @@ func main() {
 	// Setup and parse flags
 	var (
 		flagName     = flag.String("n", noneStr, "Specify virtual environment")
+		flagDetach   = flag.Bool("d", true, "Specify detached execution")
 		flagOverride = flag.String("c", noneStr, "Specify command override")
 	)
 	flag.Usage = usage
@@ -64,16 +65,13 @@ func main() {
 	// Initialize devices
 	ve.Devinit()
 
-	// Attach std devices
-	ve.Attach(os.Stdin, os.Stdout, os.Stderr)
+	// Configure the standard devices
+	if err = ve.Stdinit(*flagDetach); err != nil {
+		panic(err)
+	}
 
 	// Mount filesystems
 	ve.Mount()
-
-	// Create new process group
-	if err = ve.NewProcGroup(); err != nil {
-		fmt.Println(err)
-	}
 
 	// Initialize networking
 	if err = ve.Linkup(); err != nil {

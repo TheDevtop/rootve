@@ -12,10 +12,7 @@ const cmdShell = "shell"
 
 // Run shell via rootexec
 func runShell() error {
-	cmd := exec.Command(librex.RootexecPath, librex.RootexecFlagName, os.Args[1], librex.RootexecFlagOverride, "/bin/ksh -l")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd := exec.Command(librex.RootexecPath, librex.RootexecFlagName, os.Args[1], librex.RootexecFlagDetach, "false", librex.RootexecFlagOverride, "/bin/ksh -l")
 	return cmd.Run()
 }
 
