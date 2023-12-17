@@ -54,16 +54,14 @@ func (ve *VirtEnv) Mount() {
 }
 
 // Configure the standard devices
-func (ve *VirtEnv) Stdinit(detach bool) error {
-	// If we detach we become group leader
-	if detach {
-		return unix.Setpgid(os.Getpid(), 0)
+func (ve *VirtEnv) Stdinit(attach bool) error {
+	if attach {
+		ve.proc.Stdin = os.Stdin
+		ve.proc.Stdout = os.Stdout
+		ve.proc.Stderr = os.Stderr
+		return nil
 	}
-	// If we don't we become an interactive process
-	ve.proc.Stdin = os.Stdin
-	ve.proc.Stdout = os.Stdout
-	ve.proc.Stderr = os.Stderr
-	return nil
+	return unix.Setpgid(os.Getpid(), 0)
 }
 
 // Attempt to initialize devices

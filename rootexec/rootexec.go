@@ -28,7 +28,7 @@ func main() {
 	// Setup and parse flags
 	var (
 		flagName     = flag.String("n", noneStr, "Specify virtual environment")
-		flagDetach   = flag.Bool("d", true, "Specify detached execution")
+		flagAttach   = flag.Bool("a", false, "Specify attached execution")
 		flagOverride = flag.String("c", noneStr, "Specify command override")
 	)
 	flag.Usage = usage
@@ -66,7 +66,7 @@ func main() {
 	ve.Devinit()
 
 	// Configure the standard devices
-	if err = ve.Stdinit(*flagDetach); err != nil {
+	if err = ve.Stdinit(*flagAttach); err != nil {
 		panic(err)
 	}
 
