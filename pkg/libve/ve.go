@@ -49,19 +49,19 @@ func (ve *VirtEnv) SetCreds() error {
 }
 
 // Attempt to mount all filesystems
-func (ve *VirtEnv) Mount() {
-	exec.Command("/sbin/mount", "-a").Run()
+func (ve *VirtEnv) Mount() error {
+	return exec.Command("/sbin/mount", "-a").Run()
 }
 
 // Configure the standard devices
 func (ve *VirtEnv) Stdinit(attach bool) error {
-	if attach {
-		ve.proc.Stdin = os.Stdin
-		ve.proc.Stdout = os.Stdout
-		ve.proc.Stderr = os.Stderr
-		return nil
+	ve.proc.Stdin = os.Stdin
+	ve.proc.Stdout = os.Stdout
+	ve.proc.Stderr = os.Stderr
+	if !attach {
+		return unix.Setpgid(os.Getpid(), 0)
 	}
-	return unix.Setpgid(os.Getpid(), 0)
+	return nil
 }
 
 // Attempt to initialize devices
@@ -71,8 +71,8 @@ func (ve *VirtEnv) Devinit() {
 	devcmd.Run()
 }
 
-// Configure networking
-func (ve *VirtEnv) Linkup() error {
+// Initialize networking
+func (ve *VirtEnv) Netinit() error {
 	var (
 		err error
 		cmd *exec.Cmd

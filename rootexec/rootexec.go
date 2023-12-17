@@ -65,16 +65,18 @@ func main() {
 	// Initialize devices
 	ve.Devinit()
 
-	// Configure the standard devices
-	if err = ve.Stdinit(*flagAttach); err != nil {
-		panic(err)
+	// Mount filesystems
+	if err = ve.Mount(); err != nil {
+		fmt.Println(err)
 	}
 
-	// Mount filesystems
-	ve.Mount()
+	// Configure the standard/console devices
+	if err = ve.Stdinit(*flagAttach); err != nil {
+		fmt.Println(err)
+	}
 
 	// Initialize networking
-	if err = ve.Linkup(); err != nil {
+	if err = ve.Netinit(); err != nil {
 		fmt.Println(err)
 	}
 
