@@ -22,6 +22,9 @@ func shellMain() int {
 	}
 
 	cmd = exec.Command(librex.RootexecPath, librex.RootexecFlagName, os.Args[1], librex.RootexecFlagAttach, librex.RootexecFlagOverride, "/bin/ksh -l")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	if err = cmd.Run(); err != nil {
 		fmt.Println(err)
 		return 2
