@@ -10,24 +10,22 @@ import (
 
 const cmdShell = "shell"
 
-// Run shell via rootexec
-func runShell() error {
-	cmd := exec.Command(librex.RootexecPath, librex.RootexecFlagName, os.Args[1], librex.RootexecFlagOverride, "/bin/ksh -l")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
-}
-
 func shellMain() int {
-	var err error
+	var (
+		err error
+		cmd *exec.Cmd
+	)
 
 	if len(os.Args) < 2 {
 		fmt.Printf("Usage: %s [name]\n", cmdShell)
 		return 2
 	}
 
-	if err = runShell(); err != nil {
+	cmd = exec.Command(librex.RootexecPath, librex.RootexecFlagName, os.Args[1], librex.RootexecFlagAttach, librex.RootexecFlagOverride, "/bin/ksh -l")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err = cmd.Run(); err != nil {
 		fmt.Println(err)
 		return 2
 	}

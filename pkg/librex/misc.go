@@ -5,6 +5,7 @@ const (
 	RootexecPath         = "/usr/local/bin/rootexec"
 	RootexecFlagName     = "-n"
 	RootexecFlagOverride = "-c"
+	RootexecFlagAttach   = "-a=true"
 )
 
 // States

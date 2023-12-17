@@ -36,13 +36,6 @@ func (ve *VirtEnv) Execute() error {
 	return ve.proc.Run()
 }
 
-// Attach the standard devices
-func (ve *VirtEnv) Attach(in, out, err *os.File) {
-	ve.proc.Stdin = in
-	ve.proc.Stdout = out
-	ve.proc.Stderr = err
-}
-
 // Set the user and group id
 func (ve *VirtEnv) SetCreds() error {
 	var err error
@@ -55,14 +48,20 @@ func (ve *VirtEnv) SetCreds() error {
 	return nil
 }
 
-// Create new process group
-func (ve *VirtEnv) NewProcGroup() error {
-	return unix.Setpgid(os.Getpid(), 0)
+// Attempt to mount all filesystems
+func (ve *VirtEnv) Mount() error {
+	return exec.Command("/sbin/mount", "-a").Run()
 }
 
-// Attempt to mount all filesystems
-func (ve *VirtEnv) Mount() {
-	exec.Command("/sbin/mount", "-a").Run()
+// Configure the standard devices
+func (ve *VirtEnv) Stdinit(attach bool) error {
+	ve.proc.Stdin = os.Stdin
+	ve.proc.Stdout = os.Stdout
+	ve.proc.Stderr = os.Stderr
+	if !attach {
+		return unix.Setpgid(os.Getpid(), 0)
+	}
+	return nil
 }
 
 // Attempt to initialize devices
@@ -72,8 +71,8 @@ func (ve *VirtEnv) Devinit() {
 	devcmd.Run()
 }
 
-// Configure networking
-func (ve *VirtEnv) Linkup() error {
+// Initialize networking
+func (ve *VirtEnv) Netinit() error {
 	var (
 		err error
 		cmd *exec.Cmd
