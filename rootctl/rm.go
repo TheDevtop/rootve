@@ -11,6 +11,7 @@ import (
 
 const cmdRemove = "rm"
 
+// Request the server to remove a virtual environment
 func removeMain() int {
 	var (
 		err     error

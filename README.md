@@ -11,7 +11,16 @@ Management framework for chroot environments on NetBSD.
 
 ### How to use
 
-You can manage Virtual Environments with rootctl.
+You can manage Virtual Environments with rootctl:
+
+- Start VE `rootctl start [name]`
+- Stop VE `rootctl stop [name]`
+- Spawn shell `rootctl shell [name]`
+- Remove VE `rootctl rm [name]`
+- Pause VE `rootctl pause [name]`
+- Resume VE `rooctl resume [name]`
+- List all VE `rootctl ls`
+- List active VE `rootctl ps`
 
 ### Example config
 ```toml
@@ -22,8 +31,10 @@ Directory = "/root"
 Uid = 0
 Gid = 0
 Environment = ["TERM=xterm", "HOME=/root"]
-Interface = "tap0"
 CommandPath = "/bin/ksh"
 CommandArgs = ["-l"]
-
+Networking = true
+Interface = "tap0"
+Bridge = "bridge0"
+AddressV4 = "192.168.1.10/24"
 ```

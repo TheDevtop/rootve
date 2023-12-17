@@ -14,7 +14,7 @@ import (
 // Global data
 var (
 	globalRexMap librex.RexMap     // Stores the rootexec instances
-	globalServer *net.UnixListener // Server
+	globalServer *net.UnixListener // Server endpoint
 )
 
 func main() {

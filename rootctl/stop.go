@@ -11,6 +11,7 @@ import (
 
 const cmdStop = "stop"
 
+// Request the server to stop a virtual environment
 func stopMain() int {
 	var (
 		err     error

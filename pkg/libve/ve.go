@@ -7,6 +7,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// The "Virtual Environment"
 type VirtEnv struct {
 	root   string
 	proc   exec.Cmd

@@ -16,6 +16,7 @@ func MakeClient() http.Client {
 	}
 }
 
+// Append the protocol prefix
 func MapProtocol(s string) string {
 	return "http://localhost" + s
 }

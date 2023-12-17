@@ -13,6 +13,7 @@ const (
 	cmdPs = "ps"
 )
 
+// Request the server to return a list with all the VE
 func lsMain() int {
 	var (
 		err     error
@@ -35,6 +36,7 @@ func lsMain() int {
 	return 0
 }
 
+// Request the server to return a list with the active VE
 func psMain() int {
 	var (
 		err     error

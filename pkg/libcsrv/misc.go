@@ -3,7 +3,7 @@ package libcsrv
 // Path to server socket
 const SocketPath = "/srv/rootd"
 
-// WebAPI Routes
+// Web API routes
 const (
 	RouteStart      = "/api/start"
 	RouteStop       = "/api/stop"

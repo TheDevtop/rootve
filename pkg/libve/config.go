@@ -6,8 +6,10 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
+// Default configuration file path
 const ConfigPath = "/etc/rootve"
 
+// Configuration entry structure
 type VirtConfig struct {
 	// Environmental
 	Root        string
@@ -60,6 +62,7 @@ func WriteConfig(path string, mvc map[string]VirtConfig) error {
 }
 
 // Allocate and initialize VE configuration
+// with default values
 func MakeVirtConfig() VirtConfig {
 	return VirtConfig{
 		Root:        "/",

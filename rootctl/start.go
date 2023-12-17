@@ -11,6 +11,7 @@ import (
 
 const cmdStart = "start"
 
+// Request the server to start a virtual environment
 func startMain() int {
 	var (
 		err     error

@@ -11,6 +11,7 @@ import (
 
 const cmdPause = "pause"
 
+// Request the server to pause a virtual environment
 func pauseMain() int {
 	var (
 		err     error

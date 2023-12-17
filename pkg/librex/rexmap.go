@@ -8,6 +8,7 @@ type RexMap struct {
 	Map  map[string]*Rex
 }
 
+// Allocate a RexMap
 func MakeRexMap(size int) RexMap {
 	return RexMap{
 		Lock: new(sync.Mutex),

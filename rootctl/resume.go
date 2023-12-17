@@ -11,6 +11,7 @@ import (
 
 const cmdResume = "resume"
 
+// Request the server to resume a paused virtual environment
 func resumeMain() int {
 	var (
 		err     error
