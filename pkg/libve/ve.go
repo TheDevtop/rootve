@@ -53,6 +53,11 @@ func (ve *VirtEnv) Mount() error {
 	return exec.Command("/sbin/mount", "-a").Run()
 }
 
+// Attempt to unmount all filesystems
+func (ve *VirtEnv) Umount() error {
+	return exec.Command("/sbin/umount", "-a").Run()
+}
+
 // Configure the standard devices
 func (ve *VirtEnv) Stdinit(attach bool) error {
 	ve.proc.Stdin = os.Stdin
@@ -66,7 +71,7 @@ func (ve *VirtEnv) Stdinit(attach bool) error {
 
 // Attempt to initialize devices
 func (ve *VirtEnv) Devinit() {
-	devcmd := exec.Command("/dev/MAKEDEV", "-u", "std", "fd", "ptm", "tty0")
+	devcmd := exec.Command("/dev/MAKEDEV", "std", "fd", "ptm", "tty0")
 	devcmd.Dir = "/dev/"
 	devcmd.Run()
 }

@@ -6,7 +6,7 @@
 $_rc_subr_loaded . /etc/rc.subr
 
 name="rootd"
-rcvar=$name
+rcvar="rootd_enable"
 command="/usr/local/bin/rootd"
 pidfile="/var/run/${name}.pid"
 

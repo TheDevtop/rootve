@@ -62,13 +62,13 @@ func main() {
 		panic(err)
 	}
 
-	// Initialize devices
-	ve.Devinit()
-
 	// Mount filesystems
 	if err = ve.Mount(); err != nil {
 		fmt.Println(err)
 	}
+
+	// Initialize devices
+	ve.Devinit()
 
 	// Configure the standard/console devices
 	if err = ve.Stdinit(*flagAttach); err != nil {
@@ -80,10 +80,14 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// Execute the process, and finish
+	// Execute the process
 	if err = ve.Execute(); err != nil {
 		fmt.Println(err)
 	}
 
+	// Unmount filesystems and exit
+	if err = ve.Umount(); err != nil {
+		fmt.Println(err)
+	}
 	os.Exit(0)
 }
