@@ -21,7 +21,7 @@ func shellMain() int {
 		return 2
 	}
 
-	cmd = exec.Command(librex.RootexecPath, librex.RootexecFlagName, os.Args[1], librex.RootexecFlagAttach, librex.RootexecFlagOverride, "/bin/ksh -l")
+	cmd = exec.Command(librex.RootexecPath, librex.RootexecFlagShell, librex.RootexecFlagName, os.Args[1])
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

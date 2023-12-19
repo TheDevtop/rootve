@@ -27,9 +27,8 @@ func main() {
 
 	// Setup and parse flags
 	var (
-		flagName     = flag.String("n", noneStr, "Specify virtual environment")
-		flagAttach   = flag.Bool("a", false, "Specify attached execution")
-		flagOverride = flag.String("c", noneStr, "Specify command override")
+		flagName  = flag.String("n", noneStr, "Specify virtual environment")
+		flagShell = flag.Bool("s", false, "Specify interactive session")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -41,11 +40,6 @@ func main() {
 	}
 	if vc, avail = mvc[*flagName]; !avail {
 		panic("Virtual environment not found")
-	}
-
-	// Check if we need to override the command
-	if *flagOverride != noneStr {
-		vc.CommandPath, vc.CommandArgs = parseCommand(*flagOverride)
 	}
 
 	// Allocate virtual environment
@@ -70,14 +64,27 @@ func main() {
 	// Initialize devices
 	ve.Devinit()
 
-	// Configure the standard/console devices
-	if err = ve.Stdinit(*flagAttach); err != nil {
-		fmt.Println(err)
-	}
-
 	// Initialize networking
 	if err = ve.Netinit(); err != nil {
 		fmt.Println(err)
+	}
+
+	// Configure the standard/console devices
+	if err = ve.Stdinit(*flagShell); err != nil {
+		fmt.Println(err)
+	}
+
+	// If we want an interactive session,
+	// we will not call the cleanup functions afterwards.
+	// As other processes are still active
+	if *flagShell {
+		// Set the process to be /bin/ksh
+		ve.SetShell()
+		// Execute the process
+		if err = ve.Execute(); err != nil {
+			fmt.Println(err)
+		}
+		os.Exit(0)
 	}
 
 	// Execute the process

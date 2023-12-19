@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strings"
-
 	"golang.org/x/sys/unix"
 )
 
@@ -16,13 +14,4 @@ func uname() string {
 		panic(err)
 	}
 	return string((*buf).Version[:])
-}
-
-// Seperate command path from arguments
-func parseCommand(str string) (string, []string) {
-	if argBuf := strings.Split(str, " "); len(argBuf) < 2 {
-		return argBuf[0], nil
-	} else {
-		return argBuf[0], argBuf[1:]
-	}
 }

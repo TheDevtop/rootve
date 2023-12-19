@@ -2,10 +2,9 @@ package librex
 
 // Rootexec data
 const (
-	RootexecPath         = "/usr/local/bin/rootexec"
-	RootexecFlagName     = "-n"
-	RootexecFlagOverride = "-c"
-	RootexecFlagAttach   = "-a=true"
+	RootexecPath      = "/usr/local/bin/rootexec"
+	RootexecFlagName  = "-n"
+	RootexecFlagShell = "-s=true"
 )
 
 // States

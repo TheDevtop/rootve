@@ -36,6 +36,12 @@ func (ve *VirtEnv) Execute() error {
 	return ve.proc.Run()
 }
 
+// Set the process to be a shell
+func (ve *VirtEnv) SetShell() {
+	ve.proc.Path = "/bin/ksh"
+	ve.proc.Args = []string{"-l"}
+}
+
 // Set the user and group id
 func (ve *VirtEnv) SetCreds() error {
 	var err error
@@ -59,11 +65,11 @@ func (ve *VirtEnv) Umount() error {
 }
 
 // Configure the standard devices
-func (ve *VirtEnv) Stdinit(attach bool) error {
+func (ve *VirtEnv) Stdinit(shellMode bool) error {
 	ve.proc.Stdin = os.Stdin
 	ve.proc.Stdout = os.Stdout
 	ve.proc.Stderr = os.Stderr
-	if !attach {
+	if !shellMode {
 		return unix.Setpgid(os.Getpid(), 0)
 	}
 	return nil
