@@ -8,10 +8,10 @@ type Form[T any] struct {
 
 // Virtual Environment list form
 type FormVeList struct {
-	Name    string
-	State   string
-	Path    string
-	Command string
+	Name      string
+	State     string
+	Interface string
+	Command   string
 }
 
 // Basic message form

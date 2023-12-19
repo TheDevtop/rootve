@@ -95,10 +95,10 @@ func apiListAll(w http.ResponseWriter, r *http.Request) {
 	for key, rex := range globalRexMap.Map {
 		if rex != nil {
 			form.Data = append(form.Data, libcsrv.FormVeList{
-				Name:    key,
-				State:   librex.StateToLabel(rex.State),
-				Path:    rex.Config.Root,
-				Command: rex.Config.CommandPath,
+				Name:      key,
+				State:     librex.StateToLabel(rex.State),
+				Command:   rex.Config.CommandPath,
+				Interface: rex.Config.Interface,
 			})
 		}
 	}
@@ -123,10 +123,10 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 		if rex != nil {
 			if rex.State == librex.StateOn {
 				form.Data = append(form.Data, libcsrv.FormVeList{
-					Name:    key,
-					State:   librex.StateToLabel(rex.State),
-					Path:    rex.Config.Root,
-					Command: rex.Config.CommandPath,
+					Name:      key,
+					State:     librex.StateToLabel(rex.State),
+					Command:   rex.Config.CommandPath,
+					Interface: rex.Config.Interface,
 				})
 			}
 		}

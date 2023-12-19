@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
-	"github.com/da0x/golang/olog"
+	"github.com/jedib0t/go-pretty/v6/table"
 )
 
 const (
@@ -20,6 +20,7 @@ func lsMain() int {
 		res     *http.Response
 		resForm = new(libcsrv.Form[[]libcsrv.FormVeList])
 		client  = libcsrv.MakeClient()
+		tw      = table.NewWriter()
 	)
 
 	if res, err = client.Get(libcsrv.MapProtocol(libcsrv.RouteListAll)); err != nil {
@@ -32,7 +33,17 @@ func lsMain() int {
 		return 2
 	}
 
-	olog.Print(resForm.Data)
+	tw.AppendHeader(table.Row{"Name", "State", "Interface", "Command"})
+	for _, entry := range resForm.Data {
+		tw.AppendRow(table.Row{
+			entry.Name,
+			entry.State,
+			entry.Interface,
+			entry.Command,
+		})
+	}
+
+	fmt.Println(tw.Render())
 	return 0
 }
 
@@ -43,6 +54,7 @@ func psMain() int {
 		res     *http.Response
 		resForm = new(libcsrv.Form[[]libcsrv.FormVeList])
 		client  = libcsrv.MakeClient()
+		tw      = table.NewWriter()
 	)
 
 	if res, err = client.Get(libcsrv.MapProtocol(libcsrv.RouteListOnline)); err != nil {
@@ -55,6 +67,16 @@ func psMain() int {
 		return 2
 	}
 
-	olog.Print(resForm.Data)
+	tw.AppendHeader(table.Row{"Name", "State", "Interface", "Command"})
+	for _, entry := range resForm.Data {
+		tw.AppendRow(table.Row{
+			entry.Name,
+			entry.State,
+			entry.Interface,
+			entry.Command,
+		})
+	}
+
+	fmt.Println(tw.Render())
 	return 0
 }
