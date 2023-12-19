@@ -6,7 +6,7 @@ Management framework for chroot environments on NetBSD.
 
 1. Clone the repository.
 2. Execute the build.sh script.
-3. Execute the install.sh script, as root.
+3. Execute the install.sh script, as **root**.
 4. Start the service.
 
 ### How to use

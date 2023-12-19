@@ -25,18 +25,20 @@ func sigListen() {
 	ipcfs.DeregisterNetwork("rootd", globalServer)
 
 	// Stop the environments
-	autostop()
+	autohalt()
 
 	close(ch)
 	os.Exit(0)
 }
 
-// Autostop the VE's
-func autostop() {
+// Halt the VE's
+func autohalt() {
 	globalRexMap.Lock.Lock()
 	for key, rex := range globalRexMap.Map {
-		if err := rex.Stop(); err != nil {
-			log.Println(err)
+		if rex != nil {
+			if err := rex.Stop(); err != nil {
+				logError("Autohalt", err)
+			}
 		}
 		log.Printf("Stopped: %s\n", key)
 	}
@@ -49,7 +51,7 @@ func autoboot() {
 	for key, rex := range globalRexMap.Map {
 		if rex.Config.Autoboot {
 			if err := rex.Start(); err != nil {
-				log.Println(err)
+				logError("Autoboot", err)
 			}
 			log.Printf("Started: %s\n", key)
 		}
