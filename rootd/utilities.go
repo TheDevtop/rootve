@@ -1,11 +1,13 @@
 package main
 
 import (
+	"io"
 	"log"
 	"os"
 	"os/signal"
 
 	"github.com/TheDevtop/ipcfs/go/ipcfs"
+	"github.com/TheDevtop/rootve/pkg/libcsrv"
 	"github.com/TheDevtop/rootve/pkg/librex"
 	"github.com/TheDevtop/rootve/pkg/libve"
 	"golang.org/x/sys/unix"
@@ -53,6 +55,19 @@ func autoboot() {
 		}
 	}
 	globalRexMap.Lock.Unlock()
+}
+
+// Send response with error message
+func responseError(w io.Writer, err error) {
+	libcsrv.WriteJson(w, libcsrv.FormMessage{
+		Error: true,
+		Data:  err.Error(),
+	})
+}
+
+// Log error message
+func logError(path string, err error) {
+	log.Printf("%s: %s\n", path, err)
 }
 
 // Convert configmap to rexmap

@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/TheDevtop/rootve/pkg/libcsrv"
@@ -19,11 +18,8 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 
 	// Read the name from the form
 	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
-		log.Println(err)
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
+		logError(libcsrv.RouteStart, err)
+		responseError(w, err)
 		return
 	}
 
@@ -36,20 +32,18 @@ func apiStart(w http.ResponseWriter, r *http.Request) {
 	globalRexMap.Lock.Unlock()
 	// End critical section
 
-	// Send a response message
+	// Send an response message
 	if err != nil {
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
-		log.Println(err)
+		logError(libcsrv.RouteStart, err)
+		responseError(w, err)
 		return
+	} else {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: false,
+			Data:  "",
+		})
 	}
 
-	libcsrv.WriteJson(w, libcsrv.FormMessage{
-		Error: false,
-		Data:  "",
-	})
 }
 
 // Stop a named Virtual Environment
@@ -62,11 +56,8 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 
 	// Read the name from the form
 	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
-		log.Println(err)
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
+		logError(libcsrv.RouteStop, err)
+		responseError(w, err)
 		return
 	}
 
@@ -81,18 +72,15 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 
 	// Send a response message
 	if err != nil {
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
-		log.Println(err)
+		logError(libcsrv.RouteStop, err)
+		responseError(w, err)
 		return
+	} else {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: false,
+			Data:  "",
+		})
 	}
-
-	libcsrv.WriteJson(w, libcsrv.FormMessage{
-		Error: false,
-		Data:  "",
-	})
 }
 
 // List all Virtual Environments
@@ -118,7 +106,7 @@ func apiListAll(w http.ResponseWriter, r *http.Request) {
 	// End critical section
 
 	if err = libcsrv.WriteJson(w, *form); err != nil {
-		log.Println(err)
+		logError(libcsrv.RouteListAll, err)
 	}
 }
 
@@ -147,7 +135,7 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 	// End critical section
 
 	if err = libcsrv.WriteJson(w, *form); err != nil {
-		log.Println(err)
+		logError(libcsrv.RouteListOnline, err)
 	}
 }
 
@@ -161,11 +149,8 @@ func apiPause(w http.ResponseWriter, r *http.Request) {
 
 	// Read the name from the form
 	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
-		log.Println(err)
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
+		logError(libcsrv.RoutePause, err)
+		responseError(w, err)
 		return
 	}
 
@@ -180,18 +165,15 @@ func apiPause(w http.ResponseWriter, r *http.Request) {
 
 	// Send a response message
 	if err != nil {
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
-		log.Println(err)
+		logError(libcsrv.RoutePause, err)
+		responseError(w, err)
 		return
+	} else {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: false,
+			Data:  "",
+		})
 	}
-
-	libcsrv.WriteJson(w, libcsrv.FormMessage{
-		Error: false,
-		Data:  "",
-	})
 }
 
 // Resume a named Virtual Environment
@@ -204,11 +186,8 @@ func apiResume(w http.ResponseWriter, r *http.Request) {
 
 	// Read the name from the form
 	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
-		log.Println(err)
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
+		logError(libcsrv.RouteResume, err)
+		responseError(w, err)
 		return
 	}
 
@@ -223,18 +202,15 @@ func apiResume(w http.ResponseWriter, r *http.Request) {
 
 	// Send a response message
 	if err != nil {
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
-		log.Println(err)
+		logError(libcsrv.RouteResume, err)
+		responseError(w, err)
 		return
+	} else {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: false,
+			Data:  "",
+		})
 	}
-
-	libcsrv.WriteJson(w, libcsrv.FormMessage{
-		Error: false,
-		Data:  "",
-	})
 }
 
 // Remove a named Virtual Environment
@@ -247,11 +223,8 @@ func apiRemove(w http.ResponseWriter, r *http.Request) {
 
 	// Read the name from the form
 	if err = libcsrv.ReadJson(r.Body, nameForm); err != nil {
-		log.Println(err)
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
+		logError(libcsrv.RouteRemove, err)
+		responseError(w, err)
 		return
 	}
 
@@ -271,16 +244,13 @@ func apiRemove(w http.ResponseWriter, r *http.Request) {
 
 	// Send a response message
 	if err != nil {
-		libcsrv.WriteJson(w, libcsrv.FormMessage{
-			Error: true,
-			Data:  err.Error(),
-		})
-		log.Println(err)
+		logError(libcsrv.RouteRemove, err)
+		responseError(w, err)
 		return
+	} else {
+		libcsrv.WriteJson(w, libcsrv.FormMessage{
+			Error: false,
+			Data:  "",
+		})
 	}
-
-	libcsrv.WriteJson(w, libcsrv.FormMessage{
-		Error: false,
-		Data:  "",
-	})
 }
