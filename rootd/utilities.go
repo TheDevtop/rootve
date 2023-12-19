@@ -18,7 +18,7 @@ func sigListen() {
 	ch := make(chan os.Signal, 1)
 
 	// Wait for the signal
-	signal.Notify(ch, os.Interrupt, unix.SIGTERM)
+	signal.Notify(ch, unix.SIGINT, unix.SIGTERM, unix.SIGSTOP)
 	<-ch
 
 	// Deregister server endpoint
@@ -31,7 +31,7 @@ func sigListen() {
 	os.Exit(0)
 }
 
-// Halt the VE's
+// Halt instances
 func autohalt() {
 	globalRexMap.Lock.Lock()
 	for key, rex := range globalRexMap.Map {
@@ -45,7 +45,7 @@ func autohalt() {
 	globalRexMap.Lock.Unlock()
 }
 
-// Autoboot VE's where autoboot=true
+// Autoboot instances where autoboot=true
 func autoboot() {
 	globalRexMap.Lock.Lock()
 	for key, rex := range globalRexMap.Map {
