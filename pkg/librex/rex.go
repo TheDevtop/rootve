@@ -56,6 +56,14 @@ func NewRex(name string, vc libve.VirtConfig) *Rex {
 	rexPtr := new(Rex)
 	rexPtr.Config = vc
 	rexPtr.State = StateOff
+	return Reproc(name, rexPtr)
+}
+
+// (Re)allocate rootexec process
+func Reproc(name string, rexPtr *Rex) *Rex {
+	if rexPtr == nil {
+		return nil
+	}
 	rexPtr.proc = exec.Command(RootexecPath, RootexecFlagName, name)
 	return rexPtr
 }

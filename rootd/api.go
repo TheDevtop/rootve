@@ -65,7 +65,7 @@ func apiStop(w http.ResponseWriter, r *http.Request) {
 	globalRexMap.Lock.Lock()
 	if rex = globalRexMap.Map[nameForm.Data]; rex != nil {
 		err = rex.Stop()
-		globalRexMap.Map[nameForm.Data] = rex
+		globalRexMap.Map[nameForm.Data] = librex.Reproc(nameForm.Data, rex)
 	}
 	globalRexMap.Lock.Unlock()
 	// End critical section
