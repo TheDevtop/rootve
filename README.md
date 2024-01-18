@@ -35,6 +35,6 @@ CommandPath = "/bin/ksh"
 CommandArgs = ["-l"]
 Networking = true
 Interface = "tap0"
-Bridge = "bridge0"
-AddressV4 = "192.168.1.10/24"
+AddressV4 = "192.168.120.102"
+NetmaskV4 = "255.255.255.0"
 ```

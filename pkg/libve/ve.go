@@ -96,15 +96,11 @@ func (ve *VirtEnv) Netinit() error {
 
 	// Create network interface
 	cmd = exec.Command("/sbin/ifconfig", ve.netif, "create")
-	if err = cmd.Run(); err != nil {
-		return err
-	}
+	cmd.Run()
 
 	// Add interface to bridge
 	cmd = exec.Command("/sbin/brconfig", ve.netbr, "add", ve.netif)
-	if err = cmd.Run(); err != nil {
-		return err
-	}
+	cmd.Run()
 
 	// Configure interface with address and netmask
 	cmd = exec.Command("/sbin/ifconfig", ve.netif, "inet", ve.addrv4, "netmask", ve.maskv4)
