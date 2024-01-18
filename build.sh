@@ -1,6 +1,6 @@
 #!/bin/sh
 START=$(pwd)
-alias compile='go120 build'
+alias compile='go121 build'
 
 cd rootexec/ && compile && echo 'Built: rootexec'
 cd $START
