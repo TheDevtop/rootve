@@ -77,7 +77,7 @@ func (ve *VirtEnv) Stdinit(shellMode bool) error {
 
 // Attempt to initialize devices
 func (ve *VirtEnv) Devinit() {
-	devcmd := exec.Command("/dev/MAKEDEV", "std", "fd", "ptm", "tty0")
+	devcmd := exec.Command("/dev/MAKEDEV", "std", "fd", "ptm", "tty0", ve.netif)
 	devcmd.Dir = "/dev/"
 	devcmd.Run()
 }
@@ -99,6 +99,13 @@ func (ve *VirtEnv) Netinit() error {
 	}
 
 	cmd = exec.Command("/sbin/brconfig", ve.netbr, "add", ve.netif)
+	if err = cmd.Run(); err != nil {
+		return err
+	}
+
+	// Assign IP
+
+	cmd = exec.Command("/sbin/ifconfig", ve.netif, "up")
 	if err = cmd.Run(); err != nil {
 		return err
 	}
