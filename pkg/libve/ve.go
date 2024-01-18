@@ -17,6 +17,7 @@ type VirtEnv struct {
 	netbr  string
 	netif  string
 	addrv4 string
+	maskv4 string
 }
 
 // Change root and directory
@@ -93,18 +94,25 @@ func (ve *VirtEnv) Netinit() error {
 		return nil
 	}
 
+	// Create network interface
 	cmd = exec.Command("/sbin/ifconfig", ve.netif, "create")
 	if err = cmd.Run(); err != nil {
 		return err
 	}
 
+	// Add interface to bridge
 	cmd = exec.Command("/sbin/brconfig", ve.netbr, "add", ve.netif)
 	if err = cmd.Run(); err != nil {
 		return err
 	}
 
-	// Assign IP
+	// Configure interface with address and netmask
+	cmd = exec.Command("/sbin/ifconfig", ve.netif, "inet", ve.addrv4, "netmask", ve.maskv4)
+	if err = cmd.Run(); err != nil {
+		return err
+	}
 
+	// Turn the interface on
 	cmd = exec.Command("/sbin/ifconfig", ve.netif, "up")
 	if err = cmd.Run(); err != nil {
 		return err
@@ -129,6 +137,7 @@ func NewEnvironment(vc VirtConfig) *VirtEnv {
 	ve.netbr = vc.Bridge
 	ve.netif = vc.Interface
 	ve.addrv4 = vc.AddressV4
+	ve.maskv4 = vc.NetmaskV4
 
 	return ve
 }

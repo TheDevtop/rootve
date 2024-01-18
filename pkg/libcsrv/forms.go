@@ -11,6 +11,7 @@ type FormVeList struct {
 	Name      string
 	State     string
 	Interface string
+	Address   string
 	Command   string
 }
 

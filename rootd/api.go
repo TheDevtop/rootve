@@ -99,6 +99,7 @@ func apiListAll(w http.ResponseWriter, r *http.Request) {
 				State:     librex.StateToLabel(rex.State),
 				Command:   rex.Config.CommandPath,
 				Interface: rex.Config.Interface,
+				Address:   rex.Config.AddressV4,
 			})
 		}
 	}
@@ -127,6 +128,7 @@ func apiListOnline(w http.ResponseWriter, r *http.Request) {
 					State:     librex.StateToLabel(rex.State),
 					Command:   rex.Config.CommandPath,
 					Interface: rex.Config.Interface,
+					Address:   rex.Config.AddressV4,
 				})
 			}
 		}

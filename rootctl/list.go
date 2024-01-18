@@ -39,6 +39,7 @@ func lsMain() int {
 			entry.Name,
 			entry.State,
 			entry.Interface,
+			entry.Address,
 			entry.Command,
 		})
 	}
@@ -73,6 +74,7 @@ func psMain() int {
 			entry.Name,
 			entry.State,
 			entry.Interface,
+			entry.Address,
 			entry.Command,
 		})
 	}

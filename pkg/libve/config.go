@@ -28,6 +28,7 @@ type VirtConfig struct {
 	Bridge     string
 	Interface  string
 	AddressV4  string
+	NetmaskV4  string
 }
 
 // Read configuration map from toml file
@@ -74,8 +75,9 @@ func MakeVirtConfig() VirtConfig {
 		CommandPath: "/bin/ksh",
 		CommandArgs: []string{"-l"},
 		Networking:  false,
-		Bridge:      "br0",
-		Interface:   "lo",
+		Bridge:      "bridge0",
+		Interface:   "tap0",
 		AddressV4:   "0.0.0.0",
+		NetmaskV4:   "255.255.255.0",
 	}
 }
