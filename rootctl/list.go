@@ -33,7 +33,7 @@ func lsMain() int {
 		return 2
 	}
 
-	tw.AppendHeader(table.Row{"Name", "State", "Interface", "Command"})
+	tw.AppendHeader(table.Row{"Name", "State", "Interface", "Address", "Command"})
 	for _, entry := range resForm.Data {
 		tw.AppendRow(table.Row{
 			entry.Name,
@@ -68,7 +68,7 @@ func psMain() int {
 		return 2
 	}
 
-	tw.AppendHeader(table.Row{"Name", "State", "Interface", "Command"})
+	tw.AppendHeader(table.Row{"Name", "State", "Interface", "Address", "Command"})
 	for _, entry := range resForm.Data {
 		tw.AppendRow(table.Row{
 			entry.Name,
